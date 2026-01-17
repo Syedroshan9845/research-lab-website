@@ -3,27 +3,50 @@
 <head>
   <title>Research Lab – Leave & Attendance</title>
 
-  <!-- Firebase libraries -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <!-- Firebase v8 (stable for browser apps) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="login-box">
-    <h2>Research Lab</h2>
 
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+<!-- LOGIN -->
+<div id="loginBox" class="box">
+  <h2>Research Lab</h2>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p class="note">Access only if admin added your email</p>
+</div>
 
-    <button onclick="login()">Login</button>
+<!-- USER DASHBOARD -->
+<div id="userDashboard" class="box hidden">
+  <h2>User Dashboard</h2>
 
-    <p class="note">
-      Access only if admin has added your email
-    </p>
-  </div>
+  <h3>Apply Leave</h3>
+  <input id="leaveDate" type="date">
+  <input id="leaveDays" type="number" placeholder="Days">
+  <input id="leaveReason" placeholder="Reason">
+  <button onclick="applyLeave()">Submit Leave</button>
 
-  <script src="app.js"></script>
+  <h3>Your Leave Requests</h3>
+  <ul id="userLeaves"></ul>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div id="adminDashboard" class="box hidden">
+  <h2>Admin Dashboard</h2>
+
+  <h3>Leave Requests</h3>
+  <ul id="allLeaves"></ul>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
