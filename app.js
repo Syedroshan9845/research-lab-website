@@ -1,26 +1,38 @@
 // 🔴 REPLACE WITH YOUR FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
-  authDomain: "research-lab-portal.firebaseapp.com",
-  projectId: "research-lab-portal"
+var firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
 
-const auth = firebase.auth();
-const db = firebase.firestore();
+var auth = firebase.auth();
+var db = firebase.firestore();
+var storage = firebase.storage();
 
-// LOGIN
+/* ---------------- AUTH ---------------- */
+
+function togglePassword() {
+  const p = document.getElementById("password");
+  p.type = p.type === "password" ? "text" : "password";
+}
+
 function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   auth.signInWithEmailAndPassword(email, password)
     .then(() => loadDashboard(email))
-    .catch(() => alert("Access denied"));
+    .catch(err => alert(err.message));
 }
 
-// LOAD DASHBOARD
+function logout() {
+  auth.signOut().then(() => location.reload());
+}
+
+/* ---------------- DASHBOARD ---------------- */
+
 function loadDashboard(email) {
   db.collection("users").doc(email).get().then(doc => {
     if (!doc.exists || !doc.data().active) {
@@ -29,67 +41,120 @@ function loadDashboard(email) {
       return;
     }
 
-    document.getElementById("loginBox").classList.add("hidden");
+    loginBox.classList.add("hidden");
 
     if (doc.data().role === "ADMIN") {
-      document.getElementById("adminDashboard").classList.remove("hidden");
+      adminDashboard.classList.remove("hidden");
       loadAllLeaves();
     } else {
-      document.getElementById("userDashboard").classList.remove("hidden");
-      loadUserLeaves(email);
+      userDashboard.classList.remove("hidden");
+      loadLeaveBalance(email);
     }
   });
 }
 
-// APPLY LEAVE (USER)
+/* ---------------- LEAVE LOGIC ---------------- */
+
+function calculateDays(from, to) {
+  const s = new Date(from);
+  const e = new Date(to);
+  const diff = e - s;
+  return diff >= 0 ? diff / (1000 * 60 * 60 * 24) + 1 : 0;
+}
+
 function applyLeave() {
-  const user = auth.currentUser.email;
+  const from = fromDate.value;
+  const to = toDate.value;
+  const reason = leaveReason.value.trim();
+  const file = document.getElementById("leaveFile").files[0];
+  const email = auth.currentUser.email;
 
-  db.collection("leaves").add({
-    email: user,
-    date: leaveDate.value,
-    days: leaveDays.value,
-    reason: leaveReason.value,
-    status: "Pending"
-  }).then(() => {
-    alert("Leave submitted");
-    loadUserLeaves(user);
+  if (!from || !to) {
+    alert("Select From and To dates");
+    return;
+  }
+
+  if (reason.length < 10) {
+    alert("Reason must be at least 10 characters");
+    return;
+  }
+
+  const days = calculateDays(from, to);
+  totalDays.innerText = days;
+
+  db.collection("users").doc(email).get().then(userDoc => {
+    const remaining =
+      userDoc.data().totalLeaves - userDoc.data().usedLeaves;
+
+    if (days > remaining) {
+      alert("Not enough remaining CL");
+      return;
+    }
+
+    function saveLeave(documentURL = "") {
+      db.collection("leaves").add({
+        email,
+        fromDate: from,
+        toDate: to,
+        days,
+        reason,
+        documentURL,
+        status: "Pending",
+        createdAt: new Date().toISOString()
+      }).then(() => {
+        alert("Leave applied");
+        leaveFile.value = "";
+      });
+    }
+
+    if (file) {
+      const ref = storage.ref(
+        `leave-documents/${email}/${Date.now()}_${file.name}`
+      );
+
+      ref.put(file).then(snap => {
+        snap.ref.getDownloadURL().then(url => {
+          saveLeave(url);
+        });
+      }).catch(() => alert("File upload failed"));
+    } else {
+      saveLeave();
+    }
   });
 }
 
-// LOAD USER LEAVES
-function loadUserLeaves(email) {
-  userLeaves.innerHTML = "";
-  db.collection("leaves").where("email", "==", email).get().then(snapshot => {
-    snapshot.forEach(doc => {
-      userLeaves.innerHTML += `<li>${doc.data().date} - ${doc.data().status}</li>`;
-    });
+/* ---------------- BALANCE ---------------- */
+
+function loadLeaveBalance(email) {
+  db.collection("users").doc(email).get().then(doc => {
+    totalLeaves.innerText = doc.data().totalLeaves;
+    usedLeaves.innerText = doc.data().usedLeaves;
+    remainingLeaves.innerText =
+      doc.data().totalLeaves - doc.data().usedLeaves;
   });
 }
 
-// LOAD ALL LEAVES (ADMIN)
+/* ---------------- ADMIN ---------------- */
+
 function loadAllLeaves() {
-  allLeaves.innerHTML = "";
-  db.collection("leaves").get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      allLeaves.innerHTML += `
-        <li>
-          ${d.email} | ${d.date} | ${d.status}
-          <button class="small" onclick="updateLeave('${doc.id}','Approved')">Approve</button>
-          <button class="small" onclick="updateLeave('${doc.id}','Rejected')">Reject</button>
-        </li>`;
+  db.collection("leaves")
+    .orderBy("createdAt", "desc")
+    .onSnapshot(snapshot => {
+      allLeaves.innerHTML = "";
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        allLeaves.innerHTML += `
+          <li>
+            <b>${d.email}</b><br>
+            ${d.fromDate} → ${d.toDate} (${d.days} days)<br>
+            Status: ${d.status}<br>
+            ${
+              d.documentURL
+                ? `<a href="${d.documentURL}" target="_blank">View Document</a>`
+                : "<i>No document uploaded</i>"
+            }
+          </li>
+        `;
+      });
     });
-  });
 }
-
-// UPDATE LEAVE STATUS
-function updateLeave(id, status) {
-  db.collection("leaves").doc(id).update({ status }).then(loadAllLeaves);
-}
-
-// LOGOUT
-function logout() {
-  auth.signOut().then(() => location.reload());
-}
-
