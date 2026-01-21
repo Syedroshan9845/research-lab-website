@@ -1,8 +1,8 @@
 // 🔴 REPLACE WITH YOUR FIREBASE CONFIG
 var firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID"
+  apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
+  authDomain: "research-lab-portal.firebaseapp.com",
+  projectId: "research-lab-portal"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -158,3 +158,4 @@ function loadAllLeaves() {
       });
     });
 }
+
