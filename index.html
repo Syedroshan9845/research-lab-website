@@ -1,38 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Research Lab – Leave & Attendance</title>
+  <title>Research Lab – Leave Management</title>
 
-  <!-- Firebase v8 (stable for browser apps) -->
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <!-- LOGIN -->
 <div id="loginBox" class="box">
   <h2>Research Lab</h2>
+
   <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+
+  <div class="password-box">
+    <input id="password" type="password" placeholder="Password">
+    <span onclick="togglePassword()">👁</span>
+  </div>
+
   <button onclick="login()">Login</button>
-  <p class="note">Access only if admin added your email</p>
 </div>
 
 <!-- USER DASHBOARD -->
 <div id="userDashboard" class="box hidden">
   <h2>User Dashboard</h2>
 
-  <h3>Apply Leave</h3>
-  <input id="leaveDate" type="date">
-  <input id="leaveDays" type="number" placeholder="Days">
-  <input id="leaveReason" placeholder="Reason">
-  <button onclick="applyLeave()">Submit Leave</button>
+  <h3>Leave Balance</h3>
+  <p>
+    Total: <span id="totalLeaves">12</span><br>
+    Used: <span id="usedLeaves">0</span><br>
+    Remaining: <span id="remainingLeaves">12</span>
+  </p>
 
-  <h3>Your Leave Requests</h3>
-  <ul id="userLeaves"></ul>
+  <h3>Apply Leave</h3>
+
+  <label>From Date</label>
+  <input id="fromDate" type="date">
+
+  <label>To Date</label>
+  <input id="toDate" type="date">
+
+  <p>Total Days: <span id="totalDays">0</span></p>
+
+  <textarea id="leaveReason" placeholder="Reason (min 10 characters)"></textarea>
+
+  <label>Supporting Document (optional)</label>
+  <input id="leaveFile" type="file" accept=".pdf,.jpg,.jpeg,.png">
+
+  <button onclick="applyLeave()">Apply Leave</button>
 
   <button onclick="logout()">Logout</button>
 </div>
