@@ -1,161 +1,60 @@
-// 🔴 REPLACE WITH YOUR FIREBASE CONFIG
+// 🔥 FIREBASE CONFIG (REPLACE WITH YOUR OWN)
 var firebaseConfig = {
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
-  projectId: "research-lab-portal"
+  projectId: "research-lab-portal",
+  storageBucket: "research-lab-portal.firebasestorage.app",
+  messagingSenderId: "149246738052",
+  appId: "G-YGTTEM0KXS"
 };
 
+// INIT
 firebase.initializeApp(firebaseConfig);
 
 var auth = firebase.auth();
 var db = firebase.firestore();
 var storage = firebase.storage();
 
-/* ---------------- AUTH ---------------- */
-
+// SHOW / HIDE PASSWORD
 function togglePassword() {
   const p = document.getElementById("password");
   p.type = p.type === "password" ? "text" : "password";
 }
 
+// LOGIN FUNCTION (FINAL & CORRECT)
 function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
+  if (!email || !password) {
+    alert("Enter email and password");
+    return;
+  }
+
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => loadDashboard(email))
-    .catch(err => alert(err.message));
-}
+    .then((cred) => {
+      const uid = cred.user.uid;
 
-function logout() {
-  auth.signOut().then(() => location.reload());
-}
-
-/* ---------------- DASHBOARD ---------------- */
-
-function loadDashboard(email) {
-  db.collection("users").doc(email).get().then(doc => {
-    if (!doc.exists || !doc.data().active) {
-      alert("User not allowed");
-      logout();
-      return;
-    }
-
-    loginBox.classList.add("hidden");
-
-    if (doc.data().role === "ADMIN") {
-      adminDashboard.classList.remove("hidden");
-      loadAllLeaves();
-    } else {
-      userDashboard.classList.remove("hidden");
-      loadLeaveBalance(email);
-    }
-  });
-}
-
-/* ---------------- LEAVE LOGIC ---------------- */
-
-function calculateDays(from, to) {
-  const s = new Date(from);
-  const e = new Date(to);
-  const diff = e - s;
-  return diff >= 0 ? diff / (1000 * 60 * 60 * 24) + 1 : 0;
-}
-
-function applyLeave() {
-  const from = fromDate.value;
-  const to = toDate.value;
-  const reason = leaveReason.value.trim();
-  const file = document.getElementById("leaveFile").files[0];
-  const email = auth.currentUser.email;
-
-  if (!from || !to) {
-    alert("Select From and To dates");
-    return;
-  }
-
-  if (reason.length < 10) {
-    alert("Reason must be at least 10 characters");
-    return;
-  }
-
-  const days = calculateDays(from, to);
-  totalDays.innerText = days;
-
-  db.collection("users").doc(email).get().then(userDoc => {
-    const remaining =
-      userDoc.data().totalLeaves - userDoc.data().usedLeaves;
-
-    if (days > remaining) {
-      alert("Not enough remaining CL");
-      return;
-    }
-
-    function saveLeave(documentURL = "") {
-      db.collection("leaves").add({
-        email,
-        fromDate: from,
-        toDate: to,
-        days,
-        reason,
-        documentURL,
-        status: "Pending",
-        createdAt: new Date().toISOString()
-      }).then(() => {
-        alert("Leave applied");
-        leaveFile.value = "";
-      });
-    }
-
-    if (file) {
-      const ref = storage.ref(
-        `leave-documents/${email}/${Date.now()}_${file.name}`
-      );
-
-      ref.put(file).then(snap => {
-        snap.ref.getDownloadURL().then(url => {
-          saveLeave(url);
+      // CHECK ADMIN FIRST
+      db.collection("admins").doc(uid).get()
+        .then((adminDoc) => {
+          if (adminDoc.exists && adminDoc.data().active === true) {
+            window.location.href = "admin-dashboard.html";
+          } else {
+            // CHECK USER
+            db.collection("users").doc(uid).get()
+              .then((userDoc) => {
+                if (userDoc.exists && userDoc.data().active === true) {
+                  window.location.href = "user-dashboard.html";
+                } else {
+                  alert("Access denied");
+                  auth.signOut();
+                }
+              });
+          }
         });
-      }).catch(() => alert("File upload failed"));
-    } else {
-      saveLeave();
-    }
-  });
-}
-
-/* ---------------- BALANCE ---------------- */
-
-function loadLeaveBalance(email) {
-  db.collection("users").doc(email).get().then(doc => {
-    totalLeaves.innerText = doc.data().totalLeaves;
-    usedLeaves.innerText = doc.data().usedLeaves;
-    remainingLeaves.innerText =
-      doc.data().totalLeaves - doc.data().usedLeaves;
-  });
-}
-
-/* ---------------- ADMIN ---------------- */
-
-function loadAllLeaves() {
-  db.collection("leaves")
-    .orderBy("createdAt", "desc")
-    .onSnapshot(snapshot => {
-      allLeaves.innerHTML = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        allLeaves.innerHTML += `
-          <li>
-            <b>${d.email}</b><br>
-            ${d.fromDate} → ${d.toDate} (${d.days} days)<br>
-            Status: ${d.status}<br>
-            ${
-              d.documentURL
-                ? `<a href="${d.documentURL}" target="_blank">View Document</a>`
-                : "<i>No document uploaded</i>"
-            }
-          </li>
-        `;
-      });
+    })
+    .catch((error) => {
+      alert(error.message);
     });
 }
-
