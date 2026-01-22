@@ -5,7 +5,7 @@ var firebaseConfig = {
   projectId: "research-lab-portal",
   storageBucket: "research-lab-portal.firebasestorage.app",
   messagingSenderId: "149246738052",
-  appId: "G-YGTTEM0KXS"
+  appId: "1:149246738052:web:f751d671a4ee32b3acccd1"
 };
 
 // INIT
@@ -58,3 +58,4 @@ function login() {
       alert(error.message);
     });
 }
+
