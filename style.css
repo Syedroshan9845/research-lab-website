@@ -1,26 +1,56 @@
 body {
-  font-family: Arial;
-  padding: 30px;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
 }
 
-.box {
-  width: 300px;
-  margin: auto;
+h2 {
+  text-align: center;
 }
 
-input, button, select {
-  display: block;
+.card {
+  background: #ffffff;
+  padding: 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 700px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input, button {
   width: 100%;
-  margin: 10px 0;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+button {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1558b0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
 }
 
 .password-box {
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .password-box span {
-  position: absolute;
-  right: 10px;
-  top: 8px;
+  margin-left: -30px;
   cursor: pointer;
 }
