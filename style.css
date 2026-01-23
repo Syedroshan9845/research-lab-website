@@ -1,31 +1,29 @@
 body {
-  font-family: Arial;
-  background: #f4f6fa;
+  font-family: Arial, sans-serif;
+  background: #f2f4f8;
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
 }
 
-.box {
-  width: 420px;
-  margin: 40px auto;
+.login-box {
   background: white;
-  padding: 25px;
-  border-radius: 8px;
+  padding: 30px;
+  width: 320px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.hidden {
-  display: none;
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-input, textarea, button {
+.login-box input {
   width: 100%;
   padding: 10px;
-  margin-top: 10px;
-}
-
-button {
-  background: #0b3c5d;
-  color: white;
-  border: none;
-  cursor: pointer;
+  margin-bottom: 15px;
 }
 
 .password-box {
@@ -35,17 +33,15 @@ button {
 .password-box span {
   position: absolute;
   right: 10px;
-  top: 12px;
+  top: 10px;
   cursor: pointer;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
-  background: #eee;
-  margin-top: 10px;
+.login-box button {
+  width: 100%;
   padding: 10px;
+  background: #1f3c88;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
