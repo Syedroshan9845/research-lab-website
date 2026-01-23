@@ -2,14 +2,36 @@
 <html>
 <head>
   <title>Admin Dashboard</title>
+
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
 
+  <hr>
+
+  <h3>Create User / Admin</h3>
+  <input id="newEmail" placeholder="Email">
+  <input id="newPassword" placeholder="Temp Password">
+  <select id="newRole">
+    <option value="USER">User</option>
+    <option value="ADMIN">Admin</option>
+  </select>
+  <button onclick="createUser()">Create</button>
+
+  <hr>
+
+  <h3>Leave Requests</h3>
   <table border="1">
     <thead>
       <tr>
@@ -19,11 +41,15 @@
         <th>Action</th>
       </tr>
     </thead>
-    <tbody id="leaveList"></tbody>
+    <tbody id="leaveTable"></tbody>
   </table>
 
-  <br>
-  <button onclick="logout()">Logout</button>
+  <hr>
+
+  <h3>Export Leaves</h3>
+  From <input type="date" id="fromExport">
+  To <input type="date" id="toExport">
+  <button onclick="exportExcel()">Download Excel</button>
 
   <script src="app.js"></script>
 </body>
