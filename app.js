@@ -1,27 +1,19 @@
-// 🔥 FIREBASE CONFIG (REPLACE WITH YOUR OWN)
+// ================= FIREBASE CONFIG =================
 var firebaseConfig = {
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
-  projectId: "research-lab-portal",
-  storageBucket: "research-lab-portal.firebasestorage.app",
-  messagingSenderId: "149246738052",
-  appId: "1:149246738052:web:f751d671a4ee32b3acccd1"
+  projectId: "research-lab-portal"
 };
 
-// INIT
+// ================= INIT =================
 firebase.initializeApp(firebaseConfig);
 
 var auth = firebase.auth();
 var db = firebase.firestore();
-var storage = firebase.storage();
 
-// SHOW / HIDE PASSWORD
-function togglePassword() {
-  const p = document.getElementById("password");
-  p.type = p.type === "password" ? "text" : "password";
-}
+console.log("Firebase initialized");
 
-// LOGIN FUNCTION (FINAL & CORRECT)
+// ================= LOGIN =================
 function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
@@ -34,20 +26,21 @@ function login() {
   auth.signInWithEmailAndPassword(email, password)
     .then((cred) => {
       const uid = cred.user.uid;
+      console.log("Logged in UID:", uid);
 
-      // CHECK ADMIN FIRST
+      // CHECK ADMIN COLLECTION
       db.collection("admins").doc(uid).get()
         .then((adminDoc) => {
           if (adminDoc.exists && adminDoc.data().active === true) {
             window.location.href = "admin-dashboard.html";
           } else {
-            // CHECK USER
+            // CHECK USER COLLECTION
             db.collection("users").doc(uid).get()
               .then((userDoc) => {
                 if (userDoc.exists && userDoc.data().active === true) {
                   window.location.href = "user-dashboard.html";
                 } else {
-                  alert("Access denied");
+                  alert("No role assigned in Firestore");
                   auth.signOut();
                 }
               });
@@ -60,4 +53,9 @@ function login() {
     });
 }
 
-
+// ================= LOGOUT =================
+function logout() {
+  auth.signOut().then(() => {
+    window.location.href = "index.html";
+  });
+}
