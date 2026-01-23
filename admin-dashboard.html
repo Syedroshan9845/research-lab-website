@@ -2,22 +2,29 @@
 <html>
 <head>
   <title>Admin Dashboard</title>
-
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="app.js"></script>
-
-  <style>
-    body { font-family: Arial; padding: 40px; }
-    button { padding: 10px 20px; }
-  </style>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
+
 <body>
+  <h2>Admin Dashboard</h2>
 
-<h1>Admin Dashboard</h1>
-<p>Welcome Admin</p>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Days</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="leaveList"></tbody>
+  </table>
 
-<button onclick="logout()">Logout</button>
+  <br>
+  <button onclick="logout()">Logout</button>
 
+  <script src="app.js"></script>
 </body>
 </html>
