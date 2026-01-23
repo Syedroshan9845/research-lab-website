@@ -2,55 +2,54 @@
 <html>
 <head>
   <title>Admin Dashboard</title>
-
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-  <!-- Excel -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
+<body id="adminPage">
 
-<body>
-  <h2>Admin Dashboard</h2>
-  <button onclick="logout()">Logout</button>
+<h2>Admin Dashboard</h2>
 
-  <hr>
+<div class="card">
+  <h3>Create User</h3>
+  <input id="newEmail" placeholder="User Email">
+  <input id="newPassword" placeholder="Temporary Password">
+  <button onclick="createUser()">Create User</button>
+</div>
 
-  <h3>Create User / Admin</h3>
-  <input id="newEmail" placeholder="Email">
-  <input id="newPassword" placeholder="Temp Password">
-  <select id="newRole">
-    <option value="USER">User</option>
-    <option value="ADMIN">Admin</option>
-  </select>
-  <button onclick="createUser()">Create</button>
-
-  <hr>
-
-  <h3>Leave Requests</h3>
-  <table border="1">
+<div class="card">
+  <h3>All Leave Requests</h3>
+  <table>
     <thead>
       <tr>
         <th>Email</th>
+        <th>From</th>
+        <th>To</th>
         <th>Days</th>
+        <th>Type</th>
         <th>Status</th>
         <th>Action</th>
       </tr>
     </thead>
-    <tbody id="leaveTable"></tbody>
+    <tbody id="allLeaves"></tbody>
   </table>
+</div>
 
-  <hr>
+<div class="card">
+  <h3>Admin Notifications</h3>
+  <ul id="adminNotes"></ul>
+</div>
 
-  <h3>Export Leaves</h3>
-  From <input type="date" id="fromExport">
-  To <input type="date" id="toExport">
-  <button onclick="exportExcel()">Download Excel</button>
+<div class="card">
+  <h3>Reports</h3>
+  <button onclick="exportExcel()">Download Leave Report</button>
+</div>
 
-  <script src="app.js"></script>
+<button onclick="logout()">Logout</button>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>
