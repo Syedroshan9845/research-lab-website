@@ -2,30 +2,56 @@
 <html>
 <head>
   <title>User Dashboard</title>
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
+<body id="userPage">
 
-<body>
-  <h2>User Dashboard</h2>
-  <button onclick="logout()">Logout</button>
+<h2>User Dashboard</h2>
 
-  <hr>
+<div class="card">
+  <h3>Leave Summary</h3>
+  <p>Total CL: <span id="total">0</span></p>
+  <p>Used CL: <span id="used">0</span></p>
+  <p>Remaining CL: <span id="remaining">0</span></p>
+</div>
 
+<div class="card">
   <h3>Apply Leave</h3>
-  From <input type="date" id="fromDate">
-  To <input type="date" id="toDate">
-  <button onclick="applyLeave()">Apply</button>
+  <label>From</label>
+  <input type="date" id="from">
+  <label>To</label>
+  <input type="date" id="to">
+  <button onclick="applyLeave()">Apply Leave</button>
+</div>
 
-  <hr>
+<div class="card">
+  <h3>My Leave Requests</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>From</th>
+        <th>To</th>
+        <th>Days</th>
+        <th>Type</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="myLeaves"></tbody>
+  </table>
+</div>
 
-  <h3>My Leaves</h3>
-  <ul id="myLeaves"></ul>
+<div class="card">
+  <h3>Notifications</h3>
+  <ul id="notes"></ul>
+</div>
 
-  <script src="app.js"></script>
+<button onclick="logout()">Logout</button>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>
