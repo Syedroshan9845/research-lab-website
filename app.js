@@ -58,4 +58,3 @@ function login() {
       alert(error.message);
     });
 }
-
