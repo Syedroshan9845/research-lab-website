@@ -1,126 +1,156 @@
-// 🔥 Firebase Config (USE YOUR OWN)
+// 🔥 FIREBASE CONFIG
 var firebaseConfig = {
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
   projectId: "research-lab-portal",
-  storageBucket: "research-lab-portal.firebasestorage.app",
-   appId: "1:149246738052:web:f751d671a4ee32b3acccd1"
 };
 
 firebase.initializeApp(firebaseConfig);
 
 var auth = firebase.auth();
 var db = firebase.firestore();
-var storage = firebase.storage();
 
-/* ================= LOGIN ================= */
+// SHOW / HIDE PASSWORD
+function togglePassword() {
+  const p = document.getElementById("password");
+  p.type = p.type === "password" ? "text" : "password";
+}
+
+// LOGIN
 function login() {
-  const email = emailInput.value.trim();
-  const password = passwordInput.value.trim();
+  const email = email.value;
+  const password = password.value;
 
   auth.signInWithEmailAndPassword(email, password)
     .then(res => {
       const uid = res.user.uid;
 
-      db.collection("admins").doc(uid).get().then(doc => {
-        if (doc.exists) {
-          window.location.href = "admin-dashboard.html";
+      db.collection("admins").doc(uid).get().then(d => {
+        if (d.exists) {
+          window.location = "admin-dashboard.html";
         } else {
-          window.location.href = "user-dashboard.html";
+          window.location = "user-dashboard.html";
         }
       });
     })
-    .catch(err => alert(err.message));
+    .catch(err => error.innerText = err.message);
 }
 
-/* ================= AUTH CHECK ================= */
-auth.onAuthStateChanged(user => {
-  if (!user) return;
+// LOGOUT
+function logout() {
+  auth.signOut().then(() => window.location = "index.html");
+}
 
-  if (location.pathname.includes("user-dashboard")) {
-    db.collection("users").doc(user.uid).get().then(doc => {
-      const d = doc.data();
-      totalLeaves.innerText = d.totalLeaves;
-      usedLeaves.innerText = d.usedLeaves;
-      remainingLeaves.innerText = d.totalLeaves - d.usedLeaves;
-    });
-  }
+// 🔥 ADMIN CREATE USER
+function createUser() {
+  const email = newEmail.value;
+  const password = newPassword.value;
+  const role = newRole.value;
 
-  if (location.pathname.includes("admin-dashboard")) {
-    loadLeaves();
-  }
-});
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(res => {
+      const uid = res.user.uid;
 
-/* ================= APPLY LEAVE ================= */
+      const data = {
+        email,
+        role,
+        active: true,
+        totalLeaves: 12,
+        usedLeaves: 0
+      };
+
+      const col = role === "ADMIN" ? "admins" : "users";
+      db.collection(col).doc(uid).set(data);
+
+      alert("User created successfully");
+    })
+    .catch(e => alert(e.message));
+}
+
+// APPLY LEAVE
 function applyLeave() {
-  const from = fromDate.value;
-  const to = toDate.value;
-  const days = Number(daysInput.value);
-  const file = docFile.files[0];
+  auth.onAuthStateChanged(user => {
+    if (!user) return;
 
-  auth.currentUser && db.collection("users").doc(auth.currentUser.uid).get()
-    .then(doc => {
-      const remaining = doc.data().totalLeaves - doc.data().usedLeaves;
-      if (days > remaining) {
-        alert("Not enough leaves");
-        return;
-      }
+    const f = fromDate.value;
+    const t = toDate.value;
+    const days =
+      (new Date(t) - new Date(f)) / (1000 * 60 * 60 * 24) + 1;
 
-      if (file) {
-        const ref = storage.ref(`leave-documents/${auth.currentUser.uid}/${file.name}`);
-        ref.put(file).then(s =>
-          s.ref.getDownloadURL().then(url => saveLeave(url))
-        );
-      } else {
-        saveLeave("");
-      }
+    db.collection("leaves").add({
+      userId: user.uid,
+      email: user.email,
+      fromDate: f,
+      toDate: t,
+      days,
+      status: "PENDING"
     });
+
+    alert("Leave applied");
+  });
 }
 
-function saveLeave(url) {
-  db.collection("leaves").add({
-    uid: auth.currentUser.uid,
-    email: auth.currentUser.email,
-    days: Number(daysInput.value),
-    fromDate: fromDate.value,
-    toDate: toDate.value,
-    documentUrl: url,
-    status: "PENDING"
-  }).then(() => alert("Leave Applied"));
-}
-
-/* ================= ADMIN ================= */
-function loadLeaves() {
+// ADMIN VIEW LEAVES
+if (leaveTable) {
   db.collection("leaves").onSnapshot(snap => {
-    leaveList.innerHTML = "";
-    snap.forEach(doc => {
-      const l = doc.data();
-      leaveList.innerHTML += `
+    leaveTable.innerHTML = "";
+    snap.forEach(d => {
+      const l = d.data();
+      leaveTable.innerHTML += `
         <tr>
           <td>${l.email}</td>
           <td>${l.days}</td>
           <td>${l.status}</td>
           <td>
-            <button onclick="approve('${doc.id}', '${l.uid}', ${l.days})">Approve</button>
-            <button onclick="reject('${doc.id}')">Reject</button>
+            <button onclick="approve('${d.id}', '${l.userId}', ${l.days})">Approve</button>
+            <button onclick="reject('${d.id}')">Reject</button>
           </td>
         </tr>`;
     });
   });
 }
 
+// APPROVE
 function approve(id, uid, days) {
   db.collection("leaves").doc(id).update({ status: "APPROVED" });
-  db.collection("users").doc(uid).update({
-    usedLeaves: firebase.firestore.FieldValue.increment(days)
-  });
+  db.collection("users").doc(uid)
+    .update({ usedLeaves: firebase.firestore.FieldValue.increment(days) });
 }
 
+// REJECT
 function reject(id) {
   db.collection("leaves").doc(id).update({ status: "REJECTED" });
 }
 
-/* ================= LOGOUT ================= */
-function logout() {
-  auth.signOut().then(() => location.href = "index.html");
+// USER VIEW LEAVES
+if (myLeaves) {
+  auth.onAuthStateChanged(user => {
+    if (!user) return;
+
+    db.collection("leaves")
+      .where("userId", "==", user.uid)
+      .onSnapshot(snap => {
+        myLeaves.innerHTML = "";
+        snap.forEach(d => {
+          const l = d.data();
+          myLeaves.innerHTML += `<li>${l.fromDate} → ${l.toDate} (${l.status})</li>`;
+        });
+      });
+  });
+}
+
+// EXCEL EXPORT
+function exportExcel() {
+  db.collection("leaves").get().then(snap => {
+    const rows = [["Email", "From", "To", "Days", "Status"]];
+    snap.forEach(d => {
+      const l = d.data();
+      rows.push([l.email, l.fromDate, l.toDate, l.days, l.status]);
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, "Leaves");
+    XLSX.writeFile(wb, "Leave_Report.xlsx");
+  });
 }
