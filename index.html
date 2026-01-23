@@ -2,29 +2,28 @@
 <html>
 <head>
   <title>Research Lab Login</title>
-
-  <!-- Firebase v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <div class="box">
-    <h2>Login</h2>
 
-    <input type="email" id="email" placeholder="Email">
-    <div class="password-box">
-      <input type="password" id="password" placeholder="Password">
-      <span onclick="togglePassword()">👁</span>
-    </div>
+<div class="card">
+  <h2>Login</h2>
 
-    <button onclick="login()">Login</button>
-    <p id="error"></p>
+  <input id="email" placeholder="Email">
+
+  <div class="password-box">
+    <input id="password" type="password" placeholder="Password">
+    <span onclick="togglePassword()">👁</span>
   </div>
 
-  <script src="app.js"></script>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="app.js"></script>
 </body>
 </html>
