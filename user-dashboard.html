@@ -2,30 +2,29 @@
 <html>
 <head>
   <title>User Dashboard</title>
+
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <h2>User Dashboard</h2>
+  <button onclick="logout()">Logout</button>
 
-  <p>Total Leaves: <span id="totalLeaves"></span></p>
-  <p>Used Leaves: <span id="usedLeaves"></span></p>
-  <p>Remaining Leaves: <span id="remainingLeaves"></span></p>
+  <hr>
 
   <h3>Apply Leave</h3>
-
-  <input type="date" id="fromDate">
-  <input type="date" id="toDate">
-  <input type="number" id="daysInput" placeholder="Days">
-  <input type="file" id="docFile">
-
+  From <input type="date" id="fromDate">
+  To <input type="date" id="toDate">
   <button onclick="applyLeave()">Apply</button>
 
-  <br><br>
-  <button onclick="logout()">Logout</button>
+  <hr>
+
+  <h3>My Leaves</h3>
+  <ul id="myLeaves"></ul>
 
   <script src="app.js"></script>
 </body>
