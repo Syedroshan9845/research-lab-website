@@ -1,18 +1,26 @@
 body {
   font-family: Arial;
-  background: #f4f4f4;
+  padding: 30px;
 }
 
-.login-box {
+.box {
   width: 300px;
-  margin: 100px auto;
-  background: white;
-  padding: 20px;
-  text-align: center;
+  margin: auto;
 }
 
-input, button {
+input, button, select {
+  display: block;
   width: 100%;
-  padding: 8px;
-  margin: 6px 0;
+  margin: 10px 0;
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box span {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  cursor: pointer;
 }
