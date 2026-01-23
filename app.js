@@ -56,6 +56,8 @@ function login() {
     })
     .catch((error) => {
       alert(error.message);
+      console.error(error);
     });
 }
+
 
