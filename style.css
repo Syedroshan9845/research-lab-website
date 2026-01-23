@@ -1,47 +1,18 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f2f4f8;
-  display: flex;
-  height: 100vh;
-  align-items: center;
-  justify-content: center;
+  font-family: Arial;
+  background: #f4f4f4;
 }
 
 .login-box {
+  width: 300px;
+  margin: 100px auto;
   background: white;
-  padding: 30px;
-  width: 320px;
-  border-radius: 6px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.login-box h2 {
+  padding: 20px;
   text-align: center;
-  margin-bottom: 20px;
 }
 
-.login-box input {
+input, button {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-}
-
-.password-box {
-  position: relative;
-}
-
-.password-box span {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  cursor: pointer;
-}
-
-.login-box button {
-  width: 100%;
-  padding: 10px;
-  background: #1f3c88;
-  color: white;
-  border: none;
-  cursor: pointer;
+  padding: 8px;
+  margin: 6px 0;
 }
