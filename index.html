@@ -1,43 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Research Lab Login</title>
 
-  <!-- Firebase v8 SDKs -->
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
-  <script src="app.js" defer></script>
-
-  <style>
-    body { font-family: Arial; background:#f4f6f8; }
-    .login-box {
-      width: 300px;
-      margin: 120px auto;
-      padding: 20px;
-      background: #fff;
-      box-shadow: 0 0 10px #ccc;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-    }
-    button { background:#1a73e8; color:white; border:none; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+  <div class="login-box">
+    <h2>Research Lab Login</h2>
 
-<div class="login-box">
-  <h2>Research Lab Login</h2>
+    <input id="emailInput" type="email" placeholder="Email">
+    <input id="passwordInput" type="password" placeholder="Password">
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
 
-  <button onclick="login()">Login</button>
-</div>
-
+  <script src="app.js"></script>
 </body>
 </html>
