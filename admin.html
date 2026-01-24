@@ -1,23 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Research Lab Login</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<body id="adminPage">
+
+<h2>Admin Dashboard</h2>
 
 <div class="card">
-  <h2>Login</h2>
-
-  <input id="email" placeholder="Email">
-
-  <div class="password-box">
-    <input id="password" type="password" placeholder="Password">
-    <span onclick="togglePassword()">👁</span>
-  </div>
-
-  <button onclick="login()">Login</button>
+  <input id="searchEmail" placeholder="Search by email">
 </div>
+
+<div class="card">
+  <label>From</label>
+  <input type="date" id="exportFrom">
+  <label>To</label>
+  <input type="date" id="exportTo">
+  <button onclick="exportExcel()">Download Excel</button>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>CL</th>
+        <th>LOP</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="allLeaves"></tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Admin Notifications</h3>
+  <ul id="adminNotes"></ul>
+</div>
+
+<button onclick="logout()">Logout</button>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -26,4 +43,3 @@
 
 <script src="app.js"></script>
 </body>
-</html>
