@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body id="adminPage" class="bg-light">
 
 <header class="topbar admin-bar">
@@ -7,9 +14,10 @@
 
 <div class="container">
 
-  <input id="searchEmail" placeholder="Search by email">
+  <input id="searchEmail" placeholder="Search user by email">
 
   <div class="card">
+    <h3>Leave Requests</h3>
     <table>
       <thead>
         <tr>
@@ -27,15 +35,17 @@
   <button onclick="exportExcel()">Download Excel</button>
 
   <div class="card">
-    <h3>Notifications</h3>
+    <h3>Admin Notifications</h3>
     <ul id="adminNotes"></ul>
   </div>
 
 </div>
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <script src="app.js"></script>
 </body>
+</html>
