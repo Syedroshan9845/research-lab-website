@@ -11,22 +11,20 @@
   <h2>Research Lab</h2>
   <p class="subtitle">Secure Login</p>
 
-  <input type="email" id="email" placeholder="Email" autocomplete="username">
+  <input type="email" id="email" placeholder="Email">
 
   <div class="password-box">
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <input type="password" id="password" placeholder="Password">
     <span onclick="togglePassword()">👁</span>
   </div>
 
-  <button id="loginBtn" type="button">Login</button>
+  <button id="loginBtn">Login</button>
   <p id="error" class="error"></p>
 </div>
 
-<!-- Firebase v8 SDKs (ORDER MATTERS) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
 <script src="app.js"></script>
 </body>
