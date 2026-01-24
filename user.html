@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body id="userPage" class="bg-light">
 
 <header class="topbar user-bar">
@@ -9,7 +16,7 @@
 
   <div class="metrics">
     <div class="metric total">Total CL<span id="total">12</span></div>
-    <div class="metric used">Used CL<span id="used">0</span></div>
+    <div class="metric used">Approved CL<span id="used">0</span></div>
     <div class="metric remaining">Remaining<span id="remaining">0</span></div>
   </div>
 
@@ -17,13 +24,13 @@
     <h3>Apply Leave</h3>
     <input type="date" id="from">
     <input type="date" id="to">
-    <textarea id="reason" placeholder="Reason (required)"></textarea>
+    <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
     <input type="file" id="document">
-    <button onclick="applyLeave()">Apply</button>
+    <button onclick="applyLeave()">Apply Leave</button>
   </div>
 
   <div class="card">
-    <h3>My Leaves</h3>
+    <h3>My Leave Requests</h3>
     <table>
       <thead>
         <tr>
@@ -44,6 +51,7 @@
 
 </div>
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
@@ -51,3 +59,4 @@
 
 <script src="app.js"></script>
 </body>
+</html>
