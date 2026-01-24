@@ -15,7 +15,7 @@
 <div class="container">
 
   <div class="metrics">
-    <div class="metric total">Total CL<span id="total">12</span></div>
+    <div class="metric total">Total CL<span>12</span></div>
     <div class="metric used">Approved CL<span id="used">0</span></div>
     <div class="metric remaining">Remaining<span id="remaining">0</span></div>
   </div>
@@ -25,7 +25,6 @@
     <input type="date" id="from">
     <input type="date" id="to">
     <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-    <input type="file" id="document">
     <button onclick="applyLeave()">Apply Leave</button>
   </div>
 
@@ -34,7 +33,8 @@
     <table>
       <thead>
         <tr>
-          <th>Dates</th>
+          <th>From</th>
+          <th>To</th>
           <th>CL</th>
           <th>LOP</th>
           <th>Status</th>
@@ -51,11 +51,9 @@
 
 </div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
 <script src="app.js"></script>
 </body>
