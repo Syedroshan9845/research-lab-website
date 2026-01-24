@@ -1,52 +1,48 @@
-<body id="userPage">
+<body id="userPage" class="bg-light">
 
-<h2>User Dashboard</h2>
+<header class="topbar user-bar">
+  <h2>User Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</header>
 
-<div class="card">
-  <p>Total CL: <span id="total">12</span></p>
-  <p>Approved CL Taken: <span id="used">0</span></p>
-  <p>Remaining CL: <span id="remaining">0</span></p>
+<div class="container">
+
+  <div class="metrics">
+    <div class="metric total">Total CL<span id="total">12</span></div>
+    <div class="metric used">Used CL<span id="used">0</span></div>
+    <div class="metric remaining">Remaining<span id="remaining">0</span></div>
+  </div>
+
+  <div class="card">
+    <h3>Apply Leave</h3>
+    <input type="date" id="from">
+    <input type="date" id="to">
+    <textarea id="reason" placeholder="Reason (required)"></textarea>
+    <input type="file" id="document">
+    <button onclick="applyLeave()">Apply</button>
+  </div>
+
+  <div class="card">
+    <h3>My Leaves</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Dates</th>
+          <th>CL</th>
+          <th>LOP</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="myLeaves"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Notifications</h3>
+    <ul id="notes"></ul>
+  </div>
+
 </div>
-
-<div class="card">
-  <h3>Apply Leave</h3>
-
-  <label>From</label>
-  <input type="date" id="from">
-
-  <label>To</label>
-  <input type="date" id="to">
-
-  <label>Reason (required)</label>
-  <textarea id="reason" required></textarea>
-
-  <label>Upload Document (optional)</label>
-  <input type="file" id="document">
-
-  <button onclick="applyLeave()">Apply Leave</button>
-</div>
-
-<div class="card">
-  <h3>My Leaves</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Dates</th>
-        <th>CL Days</th>
-        <th>LOP Days</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="myLeaves"></tbody>
-  </table>
-</div>
-
-<div class="card">
-  <h3>Notifications</h3>
-  <ul id="notes"></ul>
-</div>
-
-<button onclick="logout()">Logout</button>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
