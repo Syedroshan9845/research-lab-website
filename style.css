@@ -1,27 +1,87 @@
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Segoe UI,Arial,sans-serif}
-.bg-gradient{min-height:100vh;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,#667eea,#764ba2)}
-.bg-light{min-height:100vh;background:#f4f6fb}
-.auth-card{background:#fff;width:320px;padding:30px;border-radius:12px;
-box-shadow:0 20px 40px rgba(0,0,0,.2);text-align:center}
-.auth-card input{width:100%;padding:10px;margin:10px 0;border-radius:6px;border:1px solid #ccc}
-.auth-card button{width:100%;padding:10px;background:#667eea;color:#fff;border:none;border-radius:6px}
-.password-box{position:relative}
-.password-box span{position:absolute;right:10px;top:12px;cursor:pointer}
-.topbar{display:flex;justify-content:space-between;padding:15px 25px;color:#fff}
-.user-bar{background:linear-gradient(90deg,#43cea2,#185a9d)}
-.admin-bar{background:linear-gradient(90deg,#ff512f,#dd2476)}
-.container{padding:30px}
-.card{background:#fff;padding:20px;margin:20px auto;max-width:900px;border-radius:12px;
-box-shadow:0 10px 20px rgba(0,0,0,.1)}
-.metrics{display:flex;gap:20px;justify-content:center}
-.metric{background:#fff;padding:20px;width:180px;border-radius:12px;text-align:center;
-box-shadow:0 10px 20px rgba(0,0,0,.1)}
-.metric span{display:block;font-size:32px;font-weight:bold;margin-top:10px}
-.metric.total{border-top:6px solid #667eea}
-.metric.used{border-top:6px solid #ff9800}
-.metric.remaining{border-top:6px solid #4caf50}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid #ddd;padding:8px;text-align:center}
-.error{color:red;margin-top:10px}
+* { box-sizing: border-box; margin: 0; padding: 0 }
+body { font-family: Arial, sans-serif }
+
+.bg-gradient {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.bg-light { background: #f4f6fb; min-height: 100vh }
+
+.auth-card {
+  background: white;
+  width: 320px;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.auth-card input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+.password-box { position: relative }
+.password-box span {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  color: white;
+}
+
+.user-bar { background: #43cea2 }
+.admin-bar { background: #ff512f }
+
+.container { padding: 20px }
+
+.card {
+  background: white;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 900px;
+  border-radius: 8px;
+}
+
+.metrics {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.metric {
+  background: white;
+  padding: 15px;
+  width: 180px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.metric span {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+}
+
+.error { color: red; margin-top: 10px }
