@@ -14,7 +14,15 @@
 
 <div class="container">
 
-  <input id="searchEmail" placeholder="Search user by email">
+  <input id="searchEmail" placeholder="Search user email" oninput="renderAdminLeaves()">
+
+  <div class="card">
+    <label>From</label>
+    <input type="date" id="excelFrom">
+    <label>To</label>
+    <input type="date" id="excelTo">
+    <button onclick="exportExcel()">Download Excel</button>
+  </div>
 
   <div class="card">
     <h3>Leave Requests</h3>
@@ -22,6 +30,8 @@
       <thead>
         <tr>
           <th>Email</th>
+          <th>From</th>
+          <th>To</th>
           <th>CL</th>
           <th>LOP</th>
           <th>Status</th>
@@ -32,8 +42,6 @@
     </table>
   </div>
 
-  <button onclick="exportExcel()">Download Excel</button>
-
   <div class="card">
     <h3>Admin Notifications</h3>
     <ul id="adminNotes"></ul>
@@ -41,7 +49,6 @@
 
 </div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
