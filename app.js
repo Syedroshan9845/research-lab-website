@@ -12,35 +12,37 @@ const storage = firebase.storage();
 
 const $ = id => document.getElementById(id);
 
-/************ AUTH ************/
 function togglePassword(){
-  const p = $("password");
-  if(p) p.type = p.type==="password"?"text":"password";
-}
-
-function login(){
-  auth.signInWithEmailAndPassword($("email").value,$("password").value)
-  .then(r=>{
-    db.doc(`admins/${r.user.uid}`).get().then(d=>{
-      location.href = d.exists ? "admin.html" : "user.html";
-    });
-  }).catch(e=>alert(e.message));
+  const p=$("password");
+  if(p) p.type=p.type==="password"?"text":"password";
 }
 
 function logout(){
   auth.signOut().then(()=>location.href="index.html");
 }
 
-/************ USER ************/
+/* LOGIN */
+const loginBtn = $("loginBtn");
+if(loginBtn){
+  loginBtn.onclick=()=>{
+    auth.signInWithEmailAndPassword($("email").value,$("password").value)
+    .then(r=>{
+      db.doc(`admins/${r.user.uid}`).get().then(d=>{
+        location.href=d.exists?"admin.html":"user.html";
+      });
+    }).catch(e=>$("error").innerText=e.message);
+  };
+}
+
+/* USER */
 function loadUser(){
   auth.onAuthStateChanged(u=>{
     if(!u) return location.href="index.html";
 
     db.doc(`users/${u.uid}`).onSnapshot(d=>{
-      const x=d.data();
-      $("total").innerText=x.totalLeaves;
-      $("used").innerText=x.usedLeaves;
-      $("remaining").innerText=x.totalLeaves-x.usedLeaves;
+      if(!d.exists) return;
+      $("used").innerText=d.data().usedLeaves;
+      $("remaining").innerText=12-d.data().usedLeaves;
     });
 
     db.collection("leaves").where("uid","==",u.uid)
@@ -58,8 +60,7 @@ function loadUser(){
       });
     });
 
-    db.collection("notifications")
-    .where("uid","==",u.uid)
+    db.collection("notifications").where("uid","==",u.uid)
     .onSnapshot(s=>{
       $("notes").innerHTML="";
       s.forEach(d=>$("notes").innerHTML+=`<li>${d.data().msg}</li>`);
@@ -74,64 +75,52 @@ function applyLeave(){
   if(!reason) return alert("Reason required");
 
   const days=(to-from)/86400000+1;
-  let cl=Math.min(2,days);
-  let lop=Math.max(0,days-2);
+  const cl=Math.min(2,days);
+  const lop=Math.max(0,days-2);
 
-  const file=$("document").files[0];
+  db.collection("leaves").add({
+    uid:auth.currentUser.uid,
+    email:auth.currentUser.email,
+    from:$("from").value,
+    to:$("to").value,
+    cl,lop,
+    reason,
+    status:"PENDING"
+  });
 
-  const saveLeave=(url="")=>{
-    db.collection("leaves").add({
-      uid:auth.currentUser.uid,
-      email:auth.currentUser.email,
-      from:$("from").value,
-      to:$("to").value,
-      cl, lop,
-      reason,
-      document:url,
-      status:"PENDING"
-    });
-
-    db.collection("notifications").add({
-      uid:"ADMIN",
-      msg:`${auth.currentUser.email} applied for leave`
-    });
-  };
-
-  if(file){
-    const ref=storage.ref(`docs/${auth.currentUser.uid}/${file.name}`);
-    ref.put(file).then(s=>s.ref.getDownloadURL().then(saveLeave));
-  } else saveLeave();
+  db.collection("notifications").add({
+    uid:"ADMIN",
+    msg:`${auth.currentUser.email} applied leave`
+  });
 }
 
-/************ ADMIN ************/
+/* ADMIN */
 function loadAdmin(){
-  auth.onAuthStateChanged(()=>{
-    db.collection("leaves").onSnapshot(s=>{
-      $("allLeaves").innerHTML="";
-      s.forEach(d=>{
-        const x=d.data();
-        if($("searchEmail").value &&
-           !x.email.includes($("searchEmail").value)) return;
+  db.collection("leaves").onSnapshot(s=>{
+    $("allLeaves").innerHTML="";
+    s.forEach(d=>{
+      const x=d.data();
+      if($("searchEmail").value &&
+         !x.email.includes($("searchEmail").value)) return;
 
-        $("allLeaves").innerHTML+=`
-        <tr>
-          <td>${x.email}</td>
-          <td>${x.cl}</td>
-          <td>${x.lop}</td>
-          <td>${x.status}</td>
-          <td>
-            <button onclick="approve('${d.id}','${x.uid}',${x.cl})">✔</button>
-            <button onclick="reject('${d.id}','${x.uid}')">✖</button>
-          </td>
-        </tr>`;
-      });
+      $("allLeaves").innerHTML+=`
+      <tr>
+        <td>${x.email}</td>
+        <td>${x.cl}</td>
+        <td>${x.lop}</td>
+        <td>${x.status}</td>
+        <td>
+          <button onclick="approve('${d.id}','${x.uid}',${x.cl})">✔</button>
+          <button onclick="reject('${d.id}','${x.uid}')">✖</button>
+        </td>
+      </tr>`;
     });
+  });
 
-    db.collection("notifications").where("uid","==","ADMIN")
-    .onSnapshot(s=>{
-      $("adminNotes").innerHTML="";
-      s.forEach(d=>$("adminNotes").innerHTML+=`<li>${d.data().msg}</li>`);
-    });
+  db.collection("notifications").where("uid","==","ADMIN")
+  .onSnapshot(s=>{
+    $("adminNotes").innerHTML="";
+    s.forEach(d=>$("adminNotes").innerHTML+=`<li>${d.data().msg}</li>`);
   });
 }
 
@@ -148,7 +137,6 @@ function reject(id,uid){
   db.collection("notifications").add({uid,msg:"Leave rejected"});
 }
 
-/************ EXCEL ************/
 function exportExcel(){
   let csv="Email,CL,LOP,Status\n";
   db.collection("leaves").get().then(s=>{
@@ -163,6 +151,5 @@ function exportExcel(){
   });
 }
 
-/************ AUTO LOAD ************/
 if($("userPage")) loadUser();
 if($("adminPage")) loadAdmin();
