@@ -1,70 +1,68 @@
-/**************** FIREBASE INIT ****************/
-var firebaseConfig = {
-apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
+/************ FIREBASE INIT ************/
+firebase.initializeApp({
+ apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
   projectId: "research-lab-portal",
   storageBucket: "research-lab-portal.firebasestorage.app"
-};
-firebase.initializeApp(firebaseConfig);
+});
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
-/**************** COMMON ****************/
-function $(id){ return document.getElementById(id); }
+const $ = id => document.getElementById(id);
 
-function logout(){
-  auth.signOut().then(()=>location.href="index.html");
-}
-
+/************ AUTH ************/
 function togglePassword(){
   const p = $("password");
   if(p) p.type = p.type==="password"?"text":"password";
 }
 
-/**************** LOGIN ****************/
 function login(){
-  auth.signInWithEmailAndPassword($("email").value, $("password").value)
-  .then(res=>{
-    db.doc(`admins/${res.user.uid}`).get().then(d=>{
+  auth.signInWithEmailAndPassword($("email").value,$("password").value)
+  .then(r=>{
+    db.doc(`admins/${r.user.uid}`).get().then(d=>{
       location.href = d.exists ? "admin.html" : "user.html";
     });
   }).catch(e=>alert(e.message));
 }
 
-/**************** USER DASHBOARD ****************/
+function logout(){
+  auth.signOut().then(()=>location.href="index.html");
+}
+
+/************ USER ************/
 function loadUser(){
   auth.onAuthStateChanged(u=>{
     if(!u) return location.href="index.html";
 
-    // leave summary
-    db.doc(`users/${u.uid}`).get().then(d=>{
-      if(!d.exists) return;
+    db.doc(`users/${u.uid}`).onSnapshot(d=>{
       const x=d.data();
       $("total").innerText=x.totalLeaves;
       $("used").innerText=x.usedLeaves;
       $("remaining").innerText=x.totalLeaves-x.usedLeaves;
     });
 
-    // notifications
-    db.collection("notifications")
-    .where("uid","==",u.uid)
-    .orderBy("createdAt","desc")
-    .onSnapshot(s=>{
-      $("notes").innerHTML="";
-      s.forEach(d=>$("notes").innerHTML+=`<li>${d.data().msg}</li>`);
-    });
-
-    // my leaves
-    db.collection("leaves")
-    .where("uid","==",u.uid)
+    db.collection("leaves").where("uid","==",u.uid)
     .onSnapshot(s=>{
       $("myLeaves").innerHTML="";
       s.forEach(d=>{
         const x=d.data();
         $("myLeaves").innerHTML+=`
-        <tr><td>${x.from}</td><td>${x.to}</td><td>${x.days}</td><td>${x.type}</td><td>${x.status}</td></tr>`;
+        <tr>
+          <td>${x.from} → ${x.to}</td>
+          <td>${x.cl}</td>
+          <td>${x.lop}</td>
+          <td>${x.status}</td>
+        </tr>`;
       });
+    });
+
+    db.collection("notifications")
+    .where("uid","==",u.uid)
+    .onSnapshot(s=>{
+      $("notes").innerHTML="";
+      s.forEach(d=>$("notes").innerHTML+=`<li>${d.data().msg}</li>`);
     });
   });
 }
@@ -72,58 +70,64 @@ function loadUser(){
 function applyLeave(){
   const from=new Date($("from").value);
   const to=new Date($("to").value);
+  const reason=$("reason").value;
+  if(!reason) return alert("Reason required");
+
   const days=(to-from)/86400000+1;
+  let cl=Math.min(2,days);
+  let lop=Math.max(0,days-2);
 
-  auth.currentUser && db.doc(`users/${auth.currentUser.uid}`).get().then(d=>{
-    const u=d.data();
-    let type="CL";
-    if(u.usedLeaves+days>2) type="LOP";
+  const file=$("document").files[0];
 
+  const saveLeave=(url="")=>{
     db.collection("leaves").add({
       uid:auth.currentUser.uid,
       email:auth.currentUser.email,
       from:$("from").value,
       to:$("to").value,
-      days,
-      type,
-      status:"PENDING",
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      cl, lop,
+      reason,
+      document:url,
+      status:"PENDING"
     });
 
     db.collection("notifications").add({
       uid:"ADMIN",
-      msg:`${auth.currentUser.email} applied leave`,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+      msg:`${auth.currentUser.email} applied for leave`
     });
-  });
+  };
+
+  if(file){
+    const ref=storage.ref(`docs/${auth.currentUser.uid}/${file.name}`);
+    ref.put(file).then(s=>s.ref.getDownloadURL().then(saveLeave));
+  } else saveLeave();
 }
 
-/**************** ADMIN DASHBOARD ****************/
+/************ ADMIN ************/
 function loadAdmin(){
-  auth.onAuthStateChanged(u=>{
-    if(!u) return location.href="index.html";
-
-    // leaves
+  auth.onAuthStateChanged(()=>{
     db.collection("leaves").onSnapshot(s=>{
       $("allLeaves").innerHTML="";
       s.forEach(d=>{
         const x=d.data();
+        if($("searchEmail").value &&
+           !x.email.includes($("searchEmail").value)) return;
+
         $("allLeaves").innerHTML+=`
         <tr>
-          <td>${x.email}</td><td>${x.from}</td><td>${x.to}</td>
-          <td>${x.days}</td><td>${x.type}</td><td>${x.status}</td>
+          <td>${x.email}</td>
+          <td>${x.cl}</td>
+          <td>${x.lop}</td>
+          <td>${x.status}</td>
           <td>
-            <button onclick="approve('${d.id}','${x.uid}',${x.days},'${x.type}')">✔</button>
+            <button onclick="approve('${d.id}','${x.uid}',${x.cl})">✔</button>
             <button onclick="reject('${d.id}','${x.uid}')">✖</button>
           </td>
         </tr>`;
       });
     });
 
-    // admin notifications
-    db.collection("notifications")
-    .where("uid","==","ADMIN")
-    .orderBy("createdAt","desc")
+    db.collection("notifications").where("uid","==","ADMIN")
     .onSnapshot(s=>{
       $("adminNotes").innerHTML="";
       s.forEach(d=>$("adminNotes").innerHTML+=`<li>${d.data().msg}</li>`);
@@ -131,51 +135,26 @@ function loadAdmin(){
   });
 }
 
-function approve(id,uid,days,type){
+function approve(id,uid,cl){
   db.doc(`leaves/${id}`).update({status:"APPROVED"});
-  if(type==="CL"){
-    db.doc(`users/${uid}`).update({
-      usedLeaves:firebase.firestore.FieldValue.increment(days)
-    });
-  }
-  db.collection("notifications").add({
-    uid,
-    msg:"Your leave approved",
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
+  db.doc(`users/${uid}`).update({
+    usedLeaves:firebase.firestore.FieldValue.increment(cl)
   });
+  db.collection("notifications").add({uid,msg:"Leave approved"});
 }
 
 function reject(id,uid){
   db.doc(`leaves/${id}`).update({status:"REJECTED"});
-  db.collection("notifications").add({
-    uid,
-    msg:"Your leave rejected",
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
+  db.collection("notifications").add({uid,msg:"Leave rejected"});
 }
 
-/**************** ADMIN CREATE USER ****************/
-function createUser(){
-  auth.createUserWithEmailAndPassword($("newEmail").value,$("newPassword").value)
-  .then(r=>{
-    db.doc(`users/${r.user.uid}`).set({
-      email:$("newEmail").value,
-      role:"USER",
-      totalLeaves:12,
-      usedLeaves:0,
-      active:true
-    });
-    alert("User created");
-  });
-}
-
-/**************** EXCEL EXPORT ****************/
+/************ EXCEL ************/
 function exportExcel(){
-  let csv="Email,From,To,Days,Type,Status\n";
+  let csv="Email,CL,LOP,Status\n";
   db.collection("leaves").get().then(s=>{
     s.forEach(d=>{
       const x=d.data();
-      csv+=`${x.email},${x.from},${x.to},${x.days},${x.type},${x.status}\n`;
+      csv+=`${x.email},${x.cl},${x.lop},${x.status}\n`;
     });
     const a=document.createElement("a");
     a.href=URL.createObjectURL(new Blob([csv]));
@@ -184,6 +163,6 @@ function exportExcel(){
   });
 }
 
-/**************** AUTO LOAD ****************/
+/************ AUTO LOAD ************/
 if($("userPage")) loadUser();
 if($("adminPage")) loadAdmin();
