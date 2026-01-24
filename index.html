@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Research Lab Login</title>
+  <meta charset="UTF-8">
+  <title>Research Lab Portal</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-gradient">
 
-<div class="card">
-  <h2>Login</h2>
+<div class="auth-card">
+  <h2>Research Lab</h2>
+  <p class="subtitle">Secure Login</p>
 
-  <input id="email" placeholder="Email">
+  <input type="email" id="email" placeholder="Email" autocomplete="username">
 
   <div class="password-box">
-    <input id="password" type="password" placeholder="Password">
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
     <span onclick="togglePassword()">👁</span>
   </div>
 
-  <button onclick="login()">Login</button>
+  <button id="loginBtn" type="button">Login</button>
+  <p id="error" class="error"></p>
 </div>
 
+<!-- Firebase v8 SDKs (ORDER MATTERS) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
