@@ -1,147 +1,27 @@
-/* RESET */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* BACKGROUNDS */
-.bg-gradient {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.bg-light {
-  min-height: 100vh;
-  background: #f4f6fb;
-}
-
-/* LOGIN CARD */
-.auth-card {
-  background: white;
-  width: 320px;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  text-align: center;
-}
-
-.auth-card h2 {
-  color: #4a4a4a;
-}
-
-.subtitle {
-  color: #777;
-  margin-bottom: 20px;
-}
-
-.auth-card input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.auth-card button {
-  width: 100%;
-  padding: 10px;
-  background: #667eea;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-.auth-card button:hover {
-  background: #556cd6;
-}
-
-.password-box {
-  position: relative;
-}
-
-.password-box span {
-  position: absolute;
-  right: 10px;
-  top: 12px;
-  cursor: pointer;
-}
-
-/* TOP BAR */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 25px;
-  color: white;
-}
-
-.user-bar {
-  background: linear-gradient(90deg, #43cea2, #185a9d);
-}
-
-.admin-bar {
-  background: linear-gradient(90deg, #ff512f, #dd2476);
-}
-
-.topbar button {
-  background: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* CONTENT */
-.container {
-  padding: 30px;
-}
-
-/* METRICS */
-.metrics {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 40px;
-}
-
-.metric {
-  background: white;
-  padding: 20px;
-  width: 180px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.metric span {
-  font-size: 32px;
-  font-weight: bold;
-  display: block;
-  margin-top: 10px;
-}
-
-.metric.total { border-top: 6px solid #667eea; }
-.metric.used { border-top: 6px solid #ff9800; }
-.metric.remaining { border-top: 6px solid #4caf50; }
-
-/* INFO BOX */
-.info-box {
-  background: white;
-  padding: 30px;
-  max-width: 500px;
-  margin: auto;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-/* ERROR */
-.error {
-  color: red;
-  margin-top: 10px;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Segoe UI,Arial,sans-serif}
+.bg-gradient{min-height:100vh;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,#667eea,#764ba2)}
+.bg-light{min-height:100vh;background:#f4f6fb}
+.auth-card{background:#fff;width:320px;padding:30px;border-radius:12px;
+box-shadow:0 20px 40px rgba(0,0,0,.2);text-align:center}
+.auth-card input{width:100%;padding:10px;margin:10px 0;border-radius:6px;border:1px solid #ccc}
+.auth-card button{width:100%;padding:10px;background:#667eea;color:#fff;border:none;border-radius:6px}
+.password-box{position:relative}
+.password-box span{position:absolute;right:10px;top:12px;cursor:pointer}
+.topbar{display:flex;justify-content:space-between;padding:15px 25px;color:#fff}
+.user-bar{background:linear-gradient(90deg,#43cea2,#185a9d)}
+.admin-bar{background:linear-gradient(90deg,#ff512f,#dd2476)}
+.container{padding:30px}
+.card{background:#fff;padding:20px;margin:20px auto;max-width:900px;border-radius:12px;
+box-shadow:0 10px 20px rgba(0,0,0,.1)}
+.metrics{display:flex;gap:20px;justify-content:center}
+.metric{background:#fff;padding:20px;width:180px;border-radius:12px;text-align:center;
+box-shadow:0 10px 20px rgba(0,0,0,.1)}
+.metric span{display:block;font-size:32px;font-weight:bold;margin-top:10px}
+.metric.total{border-top:6px solid #667eea}
+.metric.used{border-top:6px solid #ff9800}
+.metric.remaining{border-top:6px solid #4caf50}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ddd;padding:8px;text-align:center}
+.error{color:red;margin-top:10px}
