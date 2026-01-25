@@ -1,167 +1,73 @@
-/* =====================
-   GLOBAL
-===================== */
+/* Reset */
 * {
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
 
+/* Page background */
 body {
   margin: 0;
-  padding: 20px;
-  background: #f4f6fb;
-  color: #333;
-}
-
-h2, h3, h4 {
-  margin-bottom: 10px;
-}
-
-/* =====================
-   BUTTONS
-===================== */
-button {
-  padding: 8px 14px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-/* =====================
-   INPUTS
-===================== */
-input, textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 6px 0 12px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-textarea {
-  min-height: 70px;
-  resize: vertical;
-}
-
-input[type="file"] {
-  padding: 4px;
-}
-
-/* =====================
-   LOGIN PAGE
-===================== */
-body:has(#email):has(#password):has(button[onclick="login()"]) {
+  height: 100vh;
   background: linear-gradient(135deg, #667eea, #764ba2);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 }
 
-body:has(#email):has(#password):has(button[onclick="login()"]) > * {
+/* Login card */
+.login-container {
   background: white;
+  width: 350px;
   padding: 30px;
-  width: 320px;
-  border-radius: 10px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
-/* =====================
-   DASHBOARD HEADER
-===================== */
-h3 span, h2 {
-  color: #667eea;
-}
-
-button[onclick="logout()"] {
-  background: #ff4b5c;
+/* Title */
+.login-container h2 {
+  text-align: center;
   margin-bottom: 20px;
 }
 
-/* =====================
-   STATS (USER DASHBOARD)
-===================== */
-p {
+/* Inputs */
+.login-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 14px;
 }
 
-p span {
-  font-weight: bold;
-  color: #667eea;
+/* Password field */
+.password-box {
+  position: relative;
 }
 
-/* =====================
-   TABLES
-===================== */
-table {
+.password-box span {
+  position: absolute;
+  right: 10px;
+  top: 12px;
+  cursor: pointer;
+}
+
+/* Button */
+.login-container button {
   width: 100%;
-  border-collapse: collapse;
-  background: white;
-  margin-top: 15px;
-}
-
-th {
+  padding: 12px;
   background: #667eea;
   color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-th, td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
+.login-container button:hover {
+  background: #5a67d8;
 }
 
-tr:nth-child(even) {
-  background: #f9f9f9;
-}
-
-/* =====================
-   STATUS COLORS
-===================== */
-td:nth-child(5):contains("PENDING") {
-  color: #ff9800;
-  font-weight: bold;
-}
-
-td:nth-child(5):contains("APPROVED") {
-  color: #4caf50;
-  font-weight: bold;
-}
-
-td:nth-child(5):contains("REJECTED") {
-  color: #f44336;
-  font-weight: bold;
-}
-
-/* =====================
-   ADMIN ACTION BUTTONS
-===================== */
-button[onclick^="approve"] {
-  background: #4caf50;
-  margin-right: 4px;
-}
-
-button[onclick^="reject"] {
-  background: #f44336;
-}
-
-/* =====================
-   RESPONSIVE
-===================== */
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  table {
-    font-size: 12px;
-  }
-}
+/* Status colors (used in tables) */
+.status.APPROVED { color: green; font-weight: bold; }
+.status.REJECTED { color: red; font-weight: bold; }
+.status.PENDING  { color: orange; font-weight: bold; }
