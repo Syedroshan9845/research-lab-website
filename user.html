@@ -3,33 +3,31 @@
 <head>
   <title>User Dashboard</title>
   <link rel="stylesheet" href="style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
 
-<div class="top-bar">
-  <div>
-    Welcome <b id="welcome"></b>
-  </div>
+<header>
+  <span>Welcome: <b id="welcome"></b></span>
   <button onclick="logout()">Logout</button>
-</div>
+</header>
 
 <div class="stats">
-  <div>Total CL<br><b>12</b></div>
   <div>Approved CL<br><b id="approvedCL">0</b></div>
-  <div>Remaining CL<br><b id="remainingCL">0</b></div>
+  <div>Remaining CL<br><b id="remainingCL">12</b></div>
   <div>LOP Taken<br><b id="lopTaken">0</b></div>
 </div>
 
 <div class="card">
   <h3>Apply Leave</h3>
-
   <input type="date" id="from">
   <input type="date" id="to">
-
-  <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-
+  <textarea id="reason" placeholder="Reason"></textarea>
   <input type="file" id="document">
-
   <button onclick="applyLeave()">Apply Leave</button>
 </div>
 
@@ -37,15 +35,14 @@
 <table>
   <thead>
     <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>CL</th>
-      <th>LOP</th>
-      <th>Status</th>
+      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th>
     </tr>
   </thead>
   <tbody id="myLeaves"></tbody>
 </table>
+
+<h3>Notifications</h3>
+<ul id="notifications"></ul>
 
 <script src="app.js"></script>
 </body>
