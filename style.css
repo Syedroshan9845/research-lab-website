@@ -1,87 +1,213 @@
-* { box-sizing: border-box; margin: 0; padding: 0 }
-body { font-family: Arial, sans-serif }
-
-.bg-gradient {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+/* ===============================
+   GLOBAL RESET
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.bg-light { background: #f4f6fb; min-height: 100vh }
-
-.auth-card {
-  background: white;
-  width: 320px;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f4f6fb;
+  color: #333;
+  line-height: 1.5;
 }
 
-.auth-card input, textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 8px 0;
+/* ===============================
+   COMMON ELEMENTS
+================================ */
+h2, h3, h4 {
+  margin-bottom: 12px;
 }
 
-.password-box { position: relative }
-.password-box span {
-  position: absolute;
-  right: 10px;
-  top: 10px;
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  color: white;
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
 }
 
-.user-bar { background: #43cea2 }
-.admin-bar { background: #ff512f }
-
-.container { padding: 20px }
-
-.card {
-  background: white;
-  padding: 20px;
-  margin: 20px auto;
-  max-width: 900px;
-  border-radius: 8px;
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0 14px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
 }
 
-.metrics {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
-
-.metric {
-  background: white;
-  padding: 15px;
-  width: 180px;
-  text-align: center;
-  border-radius: 8px;
-}
-
-.metric span {
-  display: block;
-  font-size: 24px;
-  font-weight: bold;
+textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background: #fff;
+  margin-top: 12px;
+}
+
+th {
+  background: #667eea;
+  color: #fff;
 }
 
 th, td {
-  border: 1px solid #ccc;
-  padding: 6px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+}
+
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* ===============================
+   LOGIN PAGE
+================================ */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.login-box {
+  background: #fff;
+  padding: 30px;
+  width: 340px;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
   text-align: center;
 }
 
-.error { color: red; margin-top: 10px }
+.login-box h2 {
+  margin-bottom: 20px;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper span {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* ===============================
+   HEADER BAR
+================================ */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.top-bar button {
+  background: #ff4b5c;
+}
+
+/* ===============================
+   DASHBOARD LAYOUT
+================================ */
+.container {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.stat-card h4 {
+  font-size: 14px;
+  color: #666;
+}
+
+.stat-card span {
+  display: block;
+  font-size: 26px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+/* ===============================
+   CARDS
+================================ */
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 30px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* ===============================
+   STATUS COLORS
+================================ */
+.status-PENDING {
+  color: #ff9800;
+  font-weight: bold;
+}
+
+.status-APPROVED {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.status-REJECTED {
+  color: #f44336;
+  font-weight: bold;
+}
+
+/* ===============================
+   FILE INPUT
+================================ */
+input[type="file"] {
+  padding: 6px;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 600px) {
+  .login-box {
+    width: 90%;
+  }
+
+  th, td {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
