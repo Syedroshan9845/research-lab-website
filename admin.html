@@ -2,36 +2,46 @@
 <html>
 <head>
   <title>Admin Dashboard</title>
-
-  <!-- Firebase v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <h2>Admin Dashboard</h2>
-    <button onclick="logout()">Logout</button>
-  </header>
+<div class="top-bar">
+  <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th>
-        <th>From</th>
-        <th>To</th>
-        <th>CL</th>
-        <th>LOP</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="allLeaves"></tbody>
-  </table>
+<div class="card">
+  <h3>Search & Export</h3>
 
-  <script src="app.js"></script>
+  <input id="searchEmail" placeholder="Search by email">
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
+
+  <button onclick="exportCSV()">Download Excel</button>
+</div>
+
+<div class="card">
+  <h3>Add User</h3>
+  <input id="newUserEmail" placeholder="User Email">
+  <button onclick="addUser()">Add User</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>From</th>
+      <th>To</th>
+      <th>CL</th>
+      <th>LOP</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="allLeaves"></tbody>
+</table>
+
+<script src="app.js"></script>
 </body>
 </html>
