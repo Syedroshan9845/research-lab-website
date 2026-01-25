@@ -2,56 +2,51 @@
 <html>
 <head>
   <title>User Dashboard</title>
-
-  <!-- Firebase v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
-    <h2>Welcome <span id="welcome"></span></h2>
-    <button onclick="logout()">Logout</button>
-  </header>
+<div class="top-bar">
+  <div>
+    Welcome <b id="welcome"></b>
+  </div>
+  <button onclick="logout()">Logout</button>
+</div>
 
-  <section class="stats">
-    <div>Total CL: <b>12</b></div>
-    <div>Approved CL: <b id="approvedCL">0</b></div>
-    <div>Remaining CL: <b id="remainingCL">0</b></div>
-    <div>LOP Taken: <b id="lopTaken">0</b></div>
-  </section>
+<div class="stats">
+  <div>Total CL<br><b>12</b></div>
+  <div>Approved CL<br><b id="approvedCL">0</b></div>
+  <div>Remaining CL<br><b id="remainingCL">0</b></div>
+  <div>LOP Taken<br><b id="lopTaken">0</b></div>
+</div>
 
-  <section class="card">
-    <h3>Apply Leave</h3>
+<div class="card">
+  <h3>Apply Leave</h3>
 
-    <input type="date" id="from">
-    <input type="date" id="to">
-    <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-    <input type="file" id="document">
+  <input type="date" id="from">
+  <input type="date" id="to">
 
-    <button onclick="applyLeave()">Apply Leave</button>
-  </section>
+  <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
 
-  <section>
-    <h3>My Leave History</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>From</th>
-          <th>To</th>
-          <th>CL</th>
-          <th>LOP</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="myLeaves"></tbody>
-    </table>
-  </section>
+  <input type="file" id="document">
 
-  <script src="app.js"></script>
+  <button onclick="applyLeave()">Apply Leave</button>
+</div>
+
+<h3>My Leave History</h3>
+<table>
+  <thead>
+    <tr>
+      <th>From</th>
+      <th>To</th>
+      <th>CL</th>
+      <th>LOP</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="myLeaves"></tbody>
+</table>
+
+<script src="app.js"></script>
 </body>
 </html>
