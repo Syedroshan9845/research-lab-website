@@ -7,7 +7,7 @@ var firebaseConfig = {
   projectId: "research-lab-portal",
   storageBucket: "research-lab-portal.firebasestorage.app",
   messagingSenderId: "149246738052",
-  appId: "1:149246738052:web:f751d671a4ee32b3acccd1",
+  appId: "1:149246738052:web:f751d671a4ee32b3acccd1"
 };
 firebase.initializeApp(firebaseConfig);
 
@@ -272,3 +272,4 @@ async function addUser() {
 
   alert("User added to Firestore (Auth account must exist)");
 }
+
