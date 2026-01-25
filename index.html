@@ -14,13 +14,18 @@
 </head>
 <body>
 
-<h2>Login</h2>
+  <div class="login-container">
+    <h2>Login</h2>
 
-<input id="email" type="email" placeholder="Email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="togglePassword()">👁</button>
-<br><br>
-<button onclick="login()">Login</button>
+    <input id="email" type="email" placeholder="Email">
+
+    <div class="password-box">
+      <input id="password" type="password" placeholder="Password">
+      <span onclick="togglePassword()">👁</span>
+    </div>
+
+    <button onclick="login()">Login</button>
+  </div>
 
 </body>
 </html>
