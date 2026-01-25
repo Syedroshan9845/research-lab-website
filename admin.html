@@ -1,58 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+  <script defer src="app.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef1f7;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    button {
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body id="adminPage" class="bg-light">
+<body>
 
-<header class="topbar admin-bar">
-  <h2>Admin Dashboard</h2>
-  <button onclick="logout()">Logout</button>
-</header>
+<h2>Admin Dashboard</h2>
+<button onclick="logout()">Logout</button>
 
-<div class="container">
+<table>
+  <thead>
+    <tr>
+      <th>Email</th>
+      <th>From</th>
+      <th>To</th>
+      <th>CL</th>
+      <th>LOP</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="allLeaves"></tbody>
+</table>
 
-  <input id="searchEmail" placeholder="Search user email" oninput="renderAdminLeaves()">
-
-  <div class="card">
-    <label>From</label>
-    <input type="date" id="excelFrom">
-    <label>To</label>
-    <input type="date" id="excelTo">
-    <button onclick="exportExcel()">Download Excel</button>
-  </div>
-
-  <div class="card">
-    <h3>Leave Requests</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th>
-          <th>From</th>
-          <th>To</th>
-          <th>CL</th>
-          <th>LOP</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="allLeaves"></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3>Admin Notifications</h3>
-    <ul id="adminNotes"></ul>
-  </div>
-
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-<script src="app.js"></script>
 </body>
 </html>
