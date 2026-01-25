@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Login</title>
 
   <!-- Firebase v8 -->
@@ -12,15 +11,17 @@
 
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="center">
+<body class="center-bg">
 
   <div class="card">
     <h2>Login</h2>
 
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
 
-    <div class="eye" onclick="togglePassword()">👁</div>
+    <div class="row">
+      <span onclick="togglePassword()" class="eye">👁</span>
+    </div>
 
     <button onclick="login()">Login</button>
   </div>
