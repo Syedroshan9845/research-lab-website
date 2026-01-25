@@ -3,46 +3,55 @@
 <head>
   <title>User Dashboard</title>
 
-  <link rel="stylesheet" href="style.css">
-
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h3>Welcome <span id="welcome"></span></h3>
-<button onclick="logout()">Logout</button>
+  <header>
+    <h2>Welcome <span id="welcome"></span></h2>
+    <button onclick="logout()">Logout</button>
+  </header>
 
-<p>Total CL: <span id="totalCL">12</span></p>
-<p>Approved CL: <span id="approvedCL">0</span></p>
-<p>Remaining CL: <span id="remainingCL">0</span></p>
-<p>LOP Taken: <span id="lopTaken">0</span></p>
+  <section class="stats">
+    <div>Total CL: <b>12</b></div>
+    <div>Approved CL: <b id="approvedCL">0</b></div>
+    <div>Remaining CL: <b id="remainingCL">0</b></div>
+    <div>LOP Taken: <b id="lopTaken">0</b></div>
+  </section>
 
-<h4>Apply Leave</h4>
-<input type="date" id="from">
-<input type="date" id="to"><br><br>
+  <section class="card">
+    <h3>Apply Leave</h3>
 
-<textarea id="reason" placeholder="Reason (mandatory)"></textarea><br><br>
+    <input type="date" id="from">
+    <input type="date" id="to">
+    <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
+    <input type="file" id="document">
 
-<input type="file" id="document"><br><br>
+    <button onclick="applyLeave()">Apply Leave</button>
+  </section>
 
-<button onclick="applyLeave()">Apply Leave</button>
+  <section>
+    <h3>My Leave History</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>From</th>
+          <th>To</th>
+          <th>CL</th>
+          <th>LOP</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="myLeaves"></tbody>
+    </table>
+  </section>
 
-<h4>My Leave History</h4>
-<table>
-  <thead>
-    <tr>
-      <th>From</th>
-      <th>To</th>
-      <th>CL</th>
-      <th>LOP</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="myLeaves">
-    <!-- JS will insert rows like below -->
-    <!--
+  <script src="app.js"></script>
+</body>
+</html>
