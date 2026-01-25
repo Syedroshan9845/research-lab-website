@@ -1,48 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Admin Dashboard</title>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
   <script defer src="app.js"></script>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #eef1f7;
-      padding: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    th, td {
-      padding: 10px;
-      border: 1px solid #ddd;
-      text-align: center;
-    }
-
-    button {
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
 
 <h2>Admin Dashboard</h2>
 <button onclick="logout()">Logout</button>
 
-<table>
+<table border="1">
   <thead>
     <tr>
       <th>Email</th>
