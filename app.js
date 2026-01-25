@@ -2,169 +2,208 @@ firebase.initializeApp({
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
   projectId: "research-lab-portal"
-});
+  storageBucket: "research-lab-portal.firebasestorage.app"
+};
+firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
-const $ = id => document.getElementById(id);
+const storage = firebase.storage();
 
-/* COMMON */
-function togglePassword() {
-  const p = $("password");
-  if (p) p.type = p.type === "password" ? "text" : "password";
-}
-function logout() {
-  auth.signOut().then(() => location.href = "index.html");
-}
+/***************************************
+ 🔐 AUTH STATE HANDLER
+***************************************/
+auth.onAuthStateChanged(async (user) => {
+  if (!user) return;
 
-/* LOGIN */
-if ($("loginBtn")) {
-  $("loginBtn").onclick = () => {
-    const email = $("email").value;
-    const password = $("password").value;
-    if (!email || !password) {
-      $("error").innerText = "Email & password required";
-      return;
+  const userDoc = await db.collection("users").doc(user.uid).get();
+  const adminDoc = await db.collection("admins").doc(user.uid).get();
+
+  if (adminDoc.exists && location.pathname.includes("admin")) {
+    loadAdminDashboard(user);
+  } else if (userDoc.exists && location.pathname.includes("user")) {
+    loadUserDashboard(user);
+  }
+});
+
+/***************************************
+ 🔑 LOGIN
+***************************************/
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    alert("Email & password required");
+    return;
+  }
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+
+    const uid = auth.currentUser.uid;
+    const admin = await db.collection("admins").doc(uid).get();
+
+    if (admin.exists) {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "user.html";
     }
-    auth.signInWithEmailAndPassword(email, password)
-      .then(r => {
-        db.doc(`admins/${r.user.uid}`).get()
-          .then(d => location.href = d.exists ? "admin.html" : "user.html");
-      })
-      .catch(e => $("error").innerText = e.message);
-  };
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
-/* USER */
-function loadUser() {
-  auth.onAuthStateChanged(u => {
-    if (!u) return location.href = "index.html";
-
-    db.doc(`users/${u.uid}`).onSnapshot(d => {
-      const used = d.exists ? d.data().usedLeaves || 0 : 0;
-      $("used").innerText = used;
-      $("remaining").innerText = 12 - used;
-    });
-
-    db.collection("leaves").where("uid", "==", u.uid)
-      .onSnapshot(s => {
-        $("myLeaves").innerHTML = "";
-        s.forEach(d => {
-          const x = d.data();
-          $("myLeaves").innerHTML += `
-            <tr>
-              <td>${x.from}</td>
-              <td>${x.to}</td>
-              <td>${x.cl}</td>
-              <td>${x.lop}</td>
-              <td>${x.status}</td>
-            </tr>`;
-        });
-      });
-
-    db.collection("notifications").where("target", "==", u.uid)
-      .onSnapshot(s => {
-        $("notes").innerHTML = "";
-        s.forEach(d => $("notes").innerHTML += `<li>${d.data().msg}</li>`);
-      });
-  });
+/***************************************
+ 👁️ PASSWORD TOGGLE
+***************************************/
+function togglePassword() {
+  const p = document.getElementById("password");
+  p.type = p.type === "password" ? "text" : "password";
 }
 
-function applyLeave() {
-  const from = $("from").value;
-  const to = $("to").value;
-  const reason = $("reason").value;
-  if (!from || !to || !reason) return alert("All fields required");
-
-  const days = (new Date(to) - new Date(from)) / 86400000 + 1;
-  const cl = Math.min(2, days);
-  const lop = Math.max(0, days - 2);
-
-  db.collection("leaves").add({
-    uid: auth.currentUser.uid,
-    email: auth.currentUser.email,
-    from, to, cl, lop,
-    status: "PENDING"
-  });
-
-  db.collection("notifications").add({
-    target: "ADMIN",
-    msg: `${auth.currentUser.email} applied for leave`
-  });
+/***************************************
+ 🚪 LOGOUT
+***************************************/
+function logout() {
+  auth.signOut().then(() => (window.location.href = "index.html"));
 }
 
-/* ADMIN */
-let adminLeavesCache = [];
+/***************************************
+ 👤 USER DASHBOARD
+***************************************/
+async function loadUserDashboard(user) {
+  document.getElementById("welcome").innerText = user.email;
 
-function loadAdmin() {
-  db.collection("leaves").onSnapshot(s => {
-    adminLeavesCache = [];
-    s.forEach(d => adminLeavesCache.push({ id: d.id, ...d.data() }));
-    renderAdminLeaves();
-  });
+  const snap = await db
+    .collection("leaveRequests")
+    .where("userId", "==", user.uid)
+    .get();
 
-  db.collection("notifications").where("target", "==", "ADMIN")
-    .onSnapshot(s => {
-      $("adminNotes").innerHTML = "";
-      s.forEach(d => $("adminNotes").innerHTML += `<li>${d.data().msg}</li>`);
-    });
-}
+  let approvedCL = 0;
+  let approvedLOP = 0;
 
-function renderAdminLeaves() {
-  const search = $("searchEmail").value.toLowerCase();
-  $("allLeaves").innerHTML = "";
-  adminLeavesCache.forEach(l => {
-    if (search && !l.email.toLowerCase().includes(search)) return;
-    $("allLeaves").innerHTML += `
+  const table = document.getElementById("myLeaves");
+  table.innerHTML = "";
+
+  snap.forEach((doc) => {
+    const d = doc.data();
+
+    if (d.status === "APPROVED") {
+      approvedCL += d.cl;
+      approvedLOP += d.lop;
+    }
+
+    table.innerHTML += `
       <tr>
-        <td>${l.email}</td>
-        <td>${l.from}</td>
-        <td>${l.to}</td>
-        <td>${l.cl}</td>
-        <td>${l.lop}</td>
-        <td>${l.status}</td>
-        <td>
-          <button onclick="approveLeave('${l.id}','${l.uid}',${l.cl})">✔</button>
-          <button onclick="rejectLeave('${l.id}','${l.uid}')">✖</button>
-        </td>
-      </tr>`;
+        <td>${d.from}</td>
+        <td>${d.to}</td>
+        <td>${d.cl}</td>
+        <td>${d.lop}</td>
+        <td>${d.status}</td>
+      </tr>
+    `;
   });
+
+  approvedCL = Math.min(approvedCL, 12);
+  const remaining = Math.max(12 - approvedCL, 0);
+
+  document.getElementById("totalCL").innerText = 12;
+  document.getElementById("approvedCL").innerText = approvedCL;
+  document.getElementById("remainingCL").innerText = remaining;
+  document.getElementById("lopTaken").innerText = approvedLOP;
 }
 
-function approveLeave(id, uid, cl) {
-  db.doc(`leaves/${id}`).update({ status: "APPROVED" });
-  db.doc(`users/${uid}`).update({
-    usedLeaves: firebase.firestore.FieldValue.increment(cl)
+/***************************************
+ 📝 APPLY LEAVE
+***************************************/
+async function applyLeave() {
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+  const reason = document.getElementById("reason").value.trim();
+  const file = document.getElementById("document").files[0];
+
+  if (!from || !to || !reason) {
+    alert("All fields required");
+    return;
+  }
+
+  const user = auth.currentUser;
+  const MS = 24 * 60 * 60 * 1000;
+  const days = Math.floor((new Date(to) - new Date(from)) / MS) + 1;
+
+  if (days <= 0) {
+    alert("Invalid date range");
+    return;
+  }
+
+  const cl = Math.min(days, 2);
+  const lop = Math.max(days - 2, 0);
+
+  let documentUrl = null;
+
+  if (file) {
+    const ref = storage.ref(`leave-docs/${user.uid}/${file.name}`);
+    await ref.put(file);
+    documentUrl = await ref.getDownloadURL();
+  }
+
+  await db.collection("leaveRequests").add({
+    userId: user.uid,
+    email: user.email,
+    from,
+    to,
+    totalDays: days,
+    cl,
+    lop,
+    reason,
+    documentUrl,
+    status: "PENDING",
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   });
-  db.collection("notifications").add({
-    target: uid,
-    msg: "Your leave has been APPROVED"
-  });
+
+  alert("Leave applied successfully");
+  location.reload();
 }
 
-function rejectLeave(id, uid) {
-  db.doc(`leaves/${id}`).update({ status: "REJECTED" });
-  db.collection("notifications").add({
-    target: uid,
-    msg: "Your leave has been REJECTED"
-  });
+/***************************************
+ 👑 ADMIN DASHBOARD
+***************************************/
+async function loadAdminDashboard() {
+  const table = document.getElementById("allLeaves");
+  table.innerHTML = "";
+
+  db.collection("leaveRequests")
+    .orderBy("createdAt", "desc")
+    .onSnapshot((snap) => {
+      table.innerHTML = "";
+      snap.forEach((doc) => {
+        const d = doc.data();
+        table.innerHTML += `
+          <tr>
+            <td>${d.email}</td>
+            <td>${d.from}</td>
+            <td>${d.to}</td>
+            <td>${d.cl}</td>
+            <td>${d.lop}</td>
+            <td>${d.status}</td>
+            <td>
+              <button onclick="approve('${doc.id}')">✔</button>
+              <button onclick="reject('${doc.id}')">✖</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
 }
 
-function exportExcel() {
-  const from = $("excelFrom").value;
-  const to = $("excelTo").value;
-  let csv = "Email,From,To,CL,LOP,Status\n";
-  adminLeavesCache.forEach(l => {
-    if (from && l.from < from) return;
-    if (to && l.to > to) return;
-    csv += `${l.email},${l.from},${l.to},${l.cl},${l.lop},${l.status}\n`;
-  });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([csv]));
-  a.download = "leave-report.csv";
-  a.click();
+/***************************************
+ ✅ APPROVE / ❌ REJECT
+***************************************/
+function approve(id) {
+  db.collection("leaveRequests").doc(id).update({ status: "APPROVED" });
 }
 
-/* AUTO LOAD */
-if ($("userPage")) loadUser();
-if ($("adminPage")) loadAdmin();
+function reject(id) {
+  db.collection("leaveRequests").doc(id).update({ status: "REJECTED" });
+}
