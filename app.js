@@ -10,114 +10,131 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-var auth = firebase.auth();
-var db = firebase.firestore();
-var storage = firebase.storage();
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-/******************** PASSWORD TOGGLE ********************/
+/*************** PASSWORD TOGGLE ***************/
 function togglePassword() {
   const p = document.getElementById("password");
   if (p) p.type = p.type === "password" ? "text" : "password";
 }
 
-/******************** LOGIN ********************/
+/*************** LOGIN ***************/
 function login() {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email = emailInput();
+  const password = passInput();
 
   if (!email || !password) {
-    alert("Enter email and password");
+    alert("Email & password required");
     return;
   }
 
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => {
-      // DO NOTHING HERE
-      // Redirect handled by auth listener
-    })
-    .catch(err => alert(err.message));
+    .catch(e => alert(e.message));
 }
 
-/******************** AUTH STATE LISTENER (CRITICAL) ********************/
-auth.onAuthStateChanged(async (user) => {
+function emailInput() { return document.getElementById("email").value.trim(); }
+function passInput() { return document.getElementById("password").value; }
+
+/*************** AUTH STATE ***************/
+auth.onAuthStateChanged(async user => {
   if (!user) return;
 
   const uid = user.uid;
 
-  // Check admin
   const adminDoc = await db.collection("admins").doc(uid).get();
+  const userDoc = await db.collection("users").doc(uid).get();
+
   if (adminDoc.exists) {
     if (!location.pathname.includes("admin.html")) {
-      window.location.replace("admin.html");
+      location.replace("admin.html");
+      return;
     }
     loadAdminDashboard();
-    return;
-  }
-
-  // Check user
-  const userDoc = await db.collection("users").doc(uid).get();
-  if (userDoc.exists) {
+  } else if (userDoc.exists) {
     if (!location.pathname.includes("user.html")) {
-      window.location.replace("user.html");
+      location.replace("user.html");
+      return;
     }
-    loadUserDashboard();
-    return;
+    loadUserDashboard(user);
+  } else {
+    alert("User role not assigned");
+    auth.signOut();
   }
-
-  alert("No role assigned. Contact admin.");
-  auth.signOut();
 });
 
-/******************** LOGOUT ********************/
+/*************** LOGOUT ***************/
 function logout() {
-  auth.signOut().then(() => {
-    window.location.replace("index.html");
-  });
+  auth.signOut().then(() => location.replace("index.html"));
 }
 
-/******************** USER DASHBOARD ********************/
-async function loadUserDashboard() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const uid = user.uid;
+/*************** USER DASHBOARD ***************/
+async function loadUserDashboard(user) {
   document.getElementById("welcome").innerText = user.email;
 
-  const userRef = db.collection("users").doc(uid);
-  const userSnap = await userRef.get();
-  const data = userSnap.data();
+  let approvedCL = 0;
+  let approvedLOP = 0;
 
-  const totalCL = data.totalLeaves || 12;
-  const approvedCL = data.usedLeaves || 0;
-  const remainingCL = Math.max(totalCL - approvedCL, 0);
+  const snap = await db.collection("leaveRequests")
+    .where("uid", "==", user.uid)
+    .get();
 
-  document.getElementById("totalCL").innerText = totalCL;
+  const tbody = document.getElementById("myLeaves");
+  tbody.innerHTML = "";
+
+  snap.forEach(doc => {
+    const d = doc.data();
+
+    if (d.status === "APPROVED") {
+      approvedCL += d.cl;
+      approvedLOP += d.lop;
+    }
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${d.from}</td>
+        <td>${d.to}</td>
+        <td>${d.cl}</td>
+        <td>${d.lop}</td>
+        <td>${d.status}</td>
+      </tr>`;
+  });
+
+  approvedCL = Math.min(approvedCL, 12);
   document.getElementById("approvedCL").innerText = approvedCL;
-  document.getElementById("remainingCL").innerText = remainingCL;
-
-  loadMyLeaves(uid);
+  document.getElementById("remainingCL").innerText = Math.max(12 - approvedCL, 0);
+  document.getElementById("lopTaken").innerText = approvedLOP;
 }
 
-/******************** APPLY LEAVE ********************/
+/*************** APPLY LEAVE ***************/
 async function applyLeave() {
-  const user = auth.currentUser;
-  if (!user) return;
-
   const from = document.getElementById("from").value;
   const to = document.getElementById("to").value;
   const reason = document.getElementById("reason").value.trim();
+  const file = document.getElementById("document").files[0];
+  const user = auth.currentUser;
 
   if (!from || !to || !reason) {
-    alert("All fields are mandatory");
+    alert("All fields required");
     return;
   }
 
-  const start = new Date(from);
-  const end = new Date(to);
-  const days = Math.floor((end - start) / (1000 * 60 * 60 * 24)) + 1;
+  const days = Math.floor((new Date(to) - new Date(from)) / 86400000) + 1;
+  if (days <= 0) {
+    alert("Invalid date range");
+    return;
+  }
 
-  let cl = Math.min(days, 2);
-  let lop = Math.max(days - 2, 0);
+  const cl = Math.min(days, 2);
+  const lop = Math.max(days - 2, 0);
+
+  let documentUrl = null;
+  if (file) {
+    const ref = storage.ref(`leaveDocs/${user.uid}/${file.name}`);
+    await ref.put(file);
+    documentUrl = await ref.getDownloadURL();
+  }
 
   await db.collection("leaveRequests").add({
     uid: user.uid,
@@ -128,78 +145,55 @@ async function applyLeave() {
     cl,
     lop,
     reason,
+    documentUrl,
     status: "PENDING",
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   alert("Leave applied");
-  loadMyLeaves(user.uid);
+  location.reload();
 }
 
-/******************** LOAD USER LEAVES ********************/
-async function loadMyLeaves(uid) {
-  const tbody = document.getElementById("myLeaves");
-  tbody.innerHTML = "";
-
-  const snap = await db.collection("leaveRequests")
-    .where("uid", "==", uid)
-    .orderBy("createdAt", "desc")
-    .get();
-
-  snap.forEach(doc => {
-    const d = doc.data();
-    tbody.innerHTML += `
-      <tr>
-        <td>${d.from}</td>
-        <td>${d.to}</td>
-        <td>${d.cl}</td>
-        <td>${d.lop}</td>
-        <td>${d.status}</td>
-      </tr>
-    `;
-  });
-}
-
-/******************** ADMIN DASHBOARD ********************/
-async function loadAdminDashboard() {
+/*************** ADMIN DASHBOARD ***************/
+function loadAdminDashboard() {
   const tbody = document.getElementById("allLeaves");
-  if (!tbody) return;
 
-  tbody.innerHTML = "";
-
-  const snap = await db.collection("leaveRequests")
+  db.collection("leaveRequests")
     .orderBy("createdAt", "desc")
-    .get();
-
-  snap.forEach(doc => {
-    const d = doc.data();
-    tbody.innerHTML += `
-      <tr>
-        <td>${d.email}</td>
-        <td>${d.from}</td>
-        <td>${d.to}</td>
-        <td>${d.cl}</td>
-        <td>${d.lop}</td>
-        <td>${d.status}</td>
-        <td>
-          <button onclick="approve('${doc.id}', '${d.uid}', ${d.cl})">✔</button>
-          <button onclick="reject('${doc.id}')">✖</button>
-        </td>
-      </tr>
-    `;
-  });
+    .onSnapshot(snap => {
+      tbody.innerHTML = "";
+      snap.forEach(doc => {
+        const d = doc.data();
+        tbody.innerHTML += `
+          <tr>
+            <td>${d.email}</td>
+            <td>${d.from}</td>
+            <td>${d.to}</td>
+            <td>${d.cl}</td>
+            <td>${d.lop}</td>
+            <td>${d.status}</td>
+            <td>
+              <button onclick="approve('${doc.id}')">✔</button>
+              <button onclick="reject('${doc.id}')">✖</button>
+            </td>
+          </tr>`;
+      });
+    });
 }
 
-/******************** APPROVE / REJECT ********************/
-async function approve(id, uid, cl) {
-  await db.collection("leaveRequests").doc(id).update({ status: "APPROVED" });
-  await db.collection("users").doc(uid).update({
-    usedLeaves: firebase.firestore.FieldValue.increment(cl)
+/*************** APPROVE / REJECT ***************/
+async function approve(id) {
+  const ref = db.collection("leaveRequests").doc(id);
+  const snap = await ref.get();
+  const d = snap.data();
+
+  await ref.update({ status: "APPROVED" });
+  await db.collection("users").doc(d.uid).update({
+    usedLeaves: firebase.firestore.FieldValue.increment(d.cl)
   });
-  loadAdminDashboard();
 }
 
 async function reject(id) {
   await db.collection("leaveRequests").doc(id).update({ status: "REJECTED" });
-  loadAdminDashboard();
 }
+
