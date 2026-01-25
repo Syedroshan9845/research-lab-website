@@ -3,32 +3,35 @@
 <head>
   <title>Admin Dashboard</title>
 
+  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
-  <script defer src="app.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Admin Dashboard</h2>
-<button onclick="logout()">Logout</button>
+  <header>
+    <h2>Admin Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+  </header>
 
-<table border="1">
-  <thead>
-    <tr>
-      <th>Email</th>
-      <th>From</th>
-      <th>To</th>
-      <th>CL</th>
-      <th>LOP</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="allLeaves"></tbody>
-</table>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>From</th>
+        <th>To</th>
+        <th>CL</th>
+        <th>LOP</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="allLeaves"></tbody>
+  </table>
 
+  <script src="app.js"></script>
 </body>
 </html>
