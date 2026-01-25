@@ -1,70 +1,119 @@
-/* ===============================
-   GLOBAL RESET
-================================ */
+/* =====================
+   GLOBAL
+===================== */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
   background: #f4f6fb;
   color: #333;
-  line-height: 1.5;
 }
 
-/* ===============================
-   COMMON ELEMENTS
-================================ */
 h2, h3, h4 {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
+/* =====================
+   BUTTONS
+===================== */
 button {
-  padding: 10px 16px;
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-  transition: transform 0.2s, box-shadow 0.2s;
+  font-weight: bold;
 }
 
 button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  opacity: 0.9;
 }
 
+/* =====================
+   INPUTS
+===================== */
 input, textarea {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0 14px 0;
-  border-radius: 6px;
+  padding: 8px;
+  margin: 6px 0 12px 0;
   border: 1px solid #ccc;
-  font-size: 14px;
+  border-radius: 6px;
 }
 
 textarea {
+  min-height: 70px;
   resize: vertical;
-  min-height: 80px;
 }
 
+input[type="file"] {
+  padding: 4px;
+}
+
+/* =====================
+   LOGIN PAGE
+===================== */
+body:has(#email):has(#password):has(button[onclick="login()"]) {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+body:has(#email):has(#password):has(button[onclick="login()"]) > * {
+  background: white;
+  padding: 30px;
+  width: 320px;
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+}
+
+/* =====================
+   DASHBOARD HEADER
+===================== */
+h3 span, h2 {
+  color: #667eea;
+}
+
+button[onclick="logout()"] {
+  background: #ff4b5c;
+  margin-bottom: 20px;
+}
+
+/* =====================
+   STATS (USER DASHBOARD)
+===================== */
+p {
+  font-size: 14px;
+}
+
+p span {
+  font-weight: bold;
+  color: #667eea;
+}
+
+/* =====================
+   TABLES
+===================== */
 table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
-  margin-top: 12px;
+  background: white;
+  margin-top: 15px;
 }
 
 th {
   background: #667eea;
-  color: #fff;
+  color: white;
 }
 
 th, td {
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #ddd;
   text-align: center;
   font-size: 14px;
@@ -74,140 +123,45 @@ tr:nth-child(even) {
   background: #f9f9f9;
 }
 
-/* ===============================
-   LOGIN PAGE
-================================ */
-.login-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.login-box {
-  background: #fff;
-  padding: 30px;
-  width: 340px;
-  border-radius: 12px;
-  box-shadow: 0 15px 30px rgba(0,0,0,0.25);
-  text-align: center;
-}
-
-.login-box h2 {
-  margin-bottom: 20px;
-}
-
-.password-wrapper {
-  position: relative;
-}
-
-.password-wrapper span {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  cursor: pointer;
-  font-size: 18px;
-}
-
-/* ===============================
-   HEADER BAR
-================================ */
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: #fff;
-}
-
-.top-bar button {
-  background: #ff4b5c;
-}
-
-/* ===============================
-   DASHBOARD LAYOUT
-================================ */
-.container {
-  max-width: 1100px;
-  margin: 30px auto;
-  padding: 0 20px;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 30px;
-}
-
-.stat-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.stat-card h4 {
-  font-size: 14px;
-  color: #666;
-}
-
-.stat-card span {
-  display: block;
-  font-size: 26px;
-  font-weight: bold;
-  margin-top: 8px;
-}
-
-/* ===============================
-   CARDS
-================================ */
-.card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-/* ===============================
+/* =====================
    STATUS COLORS
-================================ */
-.status-PENDING {
+===================== */
+td:nth-child(5):contains("PENDING") {
   color: #ff9800;
   font-weight: bold;
 }
 
-.status-APPROVED {
+td:nth-child(5):contains("APPROVED") {
   color: #4caf50;
   font-weight: bold;
 }
 
-.status-REJECTED {
+td:nth-child(5):contains("REJECTED") {
   color: #f44336;
   font-weight: bold;
 }
 
-/* ===============================
-   FILE INPUT
-================================ */
-input[type="file"] {
-  padding: 6px;
+/* =====================
+   ADMIN ACTION BUTTONS
+===================== */
+button[onclick^="approve"] {
+  background: #4caf50;
+  margin-right: 4px;
 }
 
-/* ===============================
+button[onclick^="reject"] {
+  background: #f44336;
+}
+
+/* =====================
    RESPONSIVE
-================================ */
+===================== */
 @media (max-width: 600px) {
-  .login-box {
-    width: 90%;
+  body {
+    padding: 10px;
   }
 
-  th, td {
+  table {
     font-size: 12px;
-    padding: 6px;
   }
 }
