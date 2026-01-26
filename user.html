@@ -3,46 +3,46 @@
 <head>
   <title>User Dashboard</title>
   <link rel="stylesheet" href="style.css">
-
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
 
 <header>
-  <span>Welcome: <b id="welcome"></b></span>
-  <button onclick="logout()">Logout</button>
+  <span id="welcome"></span>
+  <button class="small-btn" onclick="logout()">Logout</button>
 </header>
 
 <div class="stats">
-  <div>Approved CL<br><b id="approvedCL">0</b></div>
-  <div>Remaining CL<br><b id="remainingCL">12</b></div>
-  <div>LOP Taken<br><b id="lopTaken">0</b></div>
+  <div>Total CL: <b>12</b></div>
+  <div>Approved CL: <b id="approvedCL">0</b></div>
+  <div>Remaining CL: <b id="remainingCL">12</b></div>
+  <div>LOP Taken: <b id="lopTaken">0</b></div>
 </div>
 
-<div class="card">
+<section class="card">
   <h3>Apply Leave</h3>
   <input type="date" id="from">
   <input type="date" id="to">
   <textarea id="reason" placeholder="Reason"></textarea>
   <input type="file" id="document">
-  <button onclick="applyLeave()">Apply Leave</button>
-</div>
+  <button onclick="applyLeave()">Apply</button>
+</section>
 
-<h3>My Leave History</h3>
-<table>
-  <thead>
-    <tr>
-      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="myLeaves"></tbody>
-</table>
+<section class="card">
+  <h3>My Leave History</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="myLeaves"></tbody>
+  </table>
+</section>
 
-<h3>Notifications</h3>
-<ul id="notifications"></ul>
+<section class="card">
+  <h3>Notifications</h3>
+  <ul id="notifications"></ul>
+</section>
 
 <script src="app.js"></script>
 </body>
