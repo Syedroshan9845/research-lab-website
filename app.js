@@ -1,3 +1,48 @@
+firebase.auth().onAuthStateChanged(async (user) => {
+  if (!user) {
+    // Not logged in → force login
+    if (!location.pathname.includes("index.html")) {
+      location.replace("index.html");
+    }
+    return;
+  }
+
+  const uid = user.uid;
+
+  // Check admin
+  const adminSnap = await firebase.firestore()
+    .collection("admins")
+    .doc(uid)
+    .get();
+
+  // Check user
+  const userSnap = await firebase.firestore()
+    .collection("users")
+    .doc(uid)
+    .get();
+
+  // ADMIN LOGIC
+  if (adminSnap.exists) {
+    if (!location.pathname.includes("admin.html")) {
+      location.replace("admin.html");
+    }
+    return;
+  }
+
+  // USER LOGIC
+  if (userSnap.exists) {
+    if (!location.pathname.includes("user.html")) {
+      location.replace("user.html");
+    }
+    return;
+  }
+
+  // Fallback
+  alert("Role not assigned. Contact admin.");
+  firebase.auth().signOut();
+  location.replace("index.html");
+});
+
 /************ FIREBASE CONFIG ************/
 firebase.initializeApp({
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
@@ -171,3 +216,4 @@ function exportExcel() {
     a.click();
   });
 }
+
