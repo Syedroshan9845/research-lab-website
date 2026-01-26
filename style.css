@@ -1,21 +1,54 @@
 body {
   font-family: Arial;
-  background: linear-gradient(135deg,#4facfe,#00f2fe);
+  background: linear-gradient(120deg,#4facfe,#00f2fe);
+  margin:0;
 }
 
 .card {
-  width: 300px;
-  margin: 100px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
+  background:#fff;
+  padding:20px;
+  margin:20px;
+  border-radius:8px;
+}
+
+header {
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  background:#0d47a1;
+  color:white;
+}
+
+input, textarea, button {
+  width:100%;
+  margin:5px 0;
+  padding:8px;
 }
 
 button {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px;
-  margin-top: 10px;
-  cursor: pointer;
+  background:#1976d2;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+.pass-box {
+  position:relative;
+}
+.pass-box span {
+  position:absolute;
+  right:10px;
+  top:10px;
+  cursor:pointer;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+th, td {
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
 }
