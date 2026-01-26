@@ -1,13 +1,40 @@
-<body onload="loadAdmin()">
-<button onclick="logout()">Logout</button>
-<button onclick="exportExcel()">Download Excel</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<table>
-<thead>
-<tr><th>Email</th><th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th><th>Action</th></tr>
-</thead>
-<tbody id="adminTable"></tbody>
-</table>
+<header>
+  <h2>Admin Dashboard</h2>
+  <button onclick="logout()">Logout</button>
+</header>
 
-<script src="firebase-scripts"></script>
+<section class="card">
+  <h3>Search & Export</h3>
+  <input id="searchEmail" placeholder="Search email">
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
+  <button onclick="exportCSV()">Download Excel</button>
+</section>
+
+<section class="card">
+  <h3>Leave Requests</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th><th>From</th><th>To</th>
+        <th>CL</th><th>LOP</th><th>Status</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="allLeaves"></tbody>
+  </table>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
 </body>
+</html>
