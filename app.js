@@ -1,3 +1,4 @@
+/************ FIREBASE CONFIG ************/
 var firebaseConfig = {
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
@@ -8,27 +9,32 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-/* PASSWORD TOGGLE */
+/************ PASSWORD TOGGLE ************/
 function togglePassword() {
   const p = document.getElementById("password");
   if (p) p.type = p.type === "password" ? "text" : "password";
 }
 
-/* LOGIN */
+/************ LOGIN ************/
 function login() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    alert("Email and password required");
+    return;
+  }
 
   auth.signInWithEmailAndPassword(email, password)
     .catch(e => alert(e.message));
 }
 
-/* LOGOUT */
+/************ LOGOUT ************/
 function logout() {
   auth.signOut().then(() => location.replace("index.html"));
 }
 
-/* AUTH ROUTING */
+/************ AUTH ROUTING (NO LOOP) ************/
 auth.onAuthStateChanged(async (user) => {
   const path = location.pathname;
 
@@ -52,7 +58,7 @@ auth.onAuthStateChanged(async (user) => {
   }
 });
 
-/* USER */
+/************ USER DASHBOARD ************/
 async function loadUser(user) {
   document.getElementById("welcome").innerText = user.email;
 
@@ -67,34 +73,46 @@ async function loadUser(user) {
 
   snap.forEach(doc => {
     const d = doc.data();
+
     if (d.status === "APPROVED") {
       approvedCL += d.cl;
       lopTaken += d.lop;
     }
+
     tbody.innerHTML += `
       <tr>
         <td>${d.from}</td>
         <td>${d.to}</td>
         <td>${d.cl}</td>
         <td>${d.lop}</td>
+        <td>${d.reason}</td>
         <td>${d.status}</td>
       </tr>`;
   });
 
   approvedCL = Math.min(approvedCL, 12);
   document.getElementById("approvedCL").innerText = approvedCL;
-  document.getElementById("remainingCL").innerText = 12 - approvedCL;
+  document.getElementById("remainingCL").innerText = Math.max(12 - approvedCL, 0);
   document.getElementById("lopTaken").innerText = lopTaken;
 }
 
-/* APPLY LEAVE */
+/************ APPLY LEAVE ************/
 async function applyLeave() {
   const user = auth.currentUser;
   const from = document.getElementById("from").value;
   const to = document.getElementById("to").value;
+  const reason = document.getElementById("reason").value.trim();
+
+  if (!from || !to || !reason) {
+    alert("Reason is mandatory");
+    return;
+  }
 
   const days = (new Date(to) - new Date(from)) / 86400000 + 1;
-  if (days <= 0) return alert("Invalid dates");
+  if (days <= 0) {
+    alert("Invalid date range");
+    return;
+  }
 
   const cl = Math.min(days, 2);
   const lop = Math.max(days - 2, 0);
@@ -106,6 +124,7 @@ async function applyLeave() {
     to,
     cl,
     lop,
+    reason,
     status: "PENDING",
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
@@ -114,7 +133,7 @@ async function applyLeave() {
   location.reload();
 }
 
-/* ADMIN */
+/************ ADMIN DASHBOARD ************/
 function loadAdmin() {
   const tbody = document.getElementById("allLeaves");
 
@@ -131,6 +150,7 @@ function loadAdmin() {
             <td>${d.to}</td>
             <td>${d.cl}</td>
             <td>${d.lop}</td>
+            <td>${d.reason}</td>
             <td>${d.status}</td>
             <td>
               <button onclick="approve('${doc.id}')">✔</button>
@@ -141,14 +161,20 @@ function loadAdmin() {
     });
 }
 
+/************ APPROVE / REJECT ************/
 function approve(id) {
   db.collection("leaves").doc(id).update({ status: "APPROVED" });
 }
+
 function reject(id) {
-  db.collection("leaves").doc(id).update({ status: "REJECTED" });
+  db.collection("leaves").doc(id).update({
+    status: "REJECTED",
+    cl: 0,
+    lop: 0
+  });
 }
 
-/* SEARCH */
+/************ SEARCH ************/
 function searchLeaves() {
   const q = document.getElementById("searchEmail").value.toLowerCase();
   document.querySelectorAll("#allLeaves tr").forEach(row => {
@@ -156,17 +182,30 @@ function searchLeaves() {
   });
 }
 
-/* EXPORT */
+/************ EXPORT CSV (DATE FILTER) ************/
 function exportCSV() {
-  let csv = "Email,From,To,CL,LOP,Status\n";
+  const from = document.getElementById("fromDate").value;
+  const to = document.getElementById("toDate").value;
+
+  let csv = "Email,From,To,CL,LOP,Reason,Status\n";
+
   document.querySelectorAll("#allLeaves tr").forEach(row => {
     const cols = row.querySelectorAll("td");
-    if (cols.length) {
-      csv += Array.from(cols).slice(0,6).map(td => td.innerText).join(",") + "\n";
+    if (!cols.length) return;
+
+    const rowFrom = cols[1].innerText;
+    const rowTo = cols[2].innerText;
+
+    if ((!from || rowFrom >= from) && (!to || rowTo <= to)) {
+      csv += Array.from(cols)
+        .slice(0, 7)
+        .map(td => td.innerText.replace(/,/g, " "))
+        .join(",") + "\n";
     }
   });
+
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([csv]));
-  a.download = "leaves.csv";
+  a.download = "leave_report.csv";
   a.click();
 }
