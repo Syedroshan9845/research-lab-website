@@ -11,8 +11,8 @@ const db = firebase.firestore();
 
 /************ PASSWORD TOGGLE ************/
 function togglePassword() {
-  const p = document.getElementById("password");
-  if (p) p.type = p.type === "password" ? "text" : "password";
+  const pwd = document.getElementById("password");
+  pwd.type = pwd.type === "password" ? "text" : "password";
 }
 
 /************ LOGIN ************/
@@ -209,3 +209,4 @@ function exportCSV() {
   a.download = "leave_report.csv";
   a.click();
 }
+
