@@ -1,58 +1,39 @@
-/* ===== GLOBAL ===== */
+/* ---------- GLOBAL ---------- */
 * {
   box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1e88e5, #26c6da);
 }
 
-/* ===== BUTTONS ===== */
-button {
-  background: #1e88e5;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-button:hover {
-  background: #1565c0;
-}
-
-/* ===== INPUTS ===== */
-input, textarea {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-/* ===== LOGIN PAGE ===== */
-.login-wrapper {
+/* ---------- LOGIN PAGE ---------- */
+.auth-bg {
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  background: linear-gradient(120deg, #0f4c81, #1fa2ff);
 }
 
 .login-card {
   background: #fff;
   width: 360px;
   padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
 .login-card h2 {
   text-align: center;
   margin-bottom: 20px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
 }
 
 .password-box {
@@ -62,93 +43,97 @@ input, textarea {
 .password-box span {
   position: absolute;
   right: 10px;
-  top: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  font-size: 13px;
-  color: #1e88e5;
 }
 
-/* ===== TOP BAR ===== */
-.topbar {
-  background: #1565c0;
-  padding: 10px 20px;
-  color: #fff;
+.login-card button {
+  width: 100%;
+  padding: 10px;
+  background: #0f4c81;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ---------- TOP BAR ---------- */
+.top-bar {
+  background: #0f4c81;
+  color: white;
+  padding: 10px 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .logout-btn {
-  padding: 6px 12px;
-  font-size: 13px;
+  background: white;
+  color: #0f4c81;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
 }
 
-/* ===== DASHBOARD CONTAINERS ===== */
+/* ---------- DASHBOARD LAYOUT ---------- */
 .container {
-  max-width: 1100px;
-  margin: 20px auto;
-  padding: 0 15px;
-}
-
-/* ===== CARDS ===== */
-.card {
-  background: #fff;
-  border-radius: 10px;
+  max-width: 1000px;
+  margin: auto;
   padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.card h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 15px;
 }
 
-/* ===== APPLY LEAVE (SMALL) ===== */
-.apply-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+/* ---------- SMALL INPUTS ---------- */
+input[type="text"],
+input[type="date"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 6px;
+  margin: 4px 0;
 }
 
-.apply-grid button {
-  grid-column: span 4;
+textarea {
+  resize: none;
+  height: 60px;
 }
 
-/* ===== TABLES ===== */
+/* ---------- BUTTONS ---------- */
+.btn {
+  padding: 6px 14px;
+  background: #0f4c81;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ---------- TABLE ---------- */
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 th, td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+  border: 1px solid #ccc;
+  padding: 6px;
   text-align: center;
 }
 
 th {
-  background: #e3f2fd;
+  background: #f0f0f0;
 }
 
-/* ===== STATUS COLORS ===== */
-.status.APPROVED { color: green; font-weight: bold; }
-.status.REJECTED { color: red; font-weight: bold; }
-.status.PENDING { color: orange; font-weight: bold; }
-
-/* ===== ADMIN SEARCH / EXPORT ===== */
-.search-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr auto;
-  gap: 10px;
-}
-
-/* ===== NOTIFICATIONS ===== */
-.notification {
-  background: #e3f2fd;
-  padding: 8px;
-  border-radius: 6px;
-  margin-bottom: 5px;
-  font-size: 13px;
-}
+/* ---------- STATUS COLORS ---------- */
+.PENDING { color: orange; }
+.APPROVED { color: green; }
+.REJECTED { color: red; }
