@@ -1,46 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>User Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
+<div class="topbar">
   <span id="welcome"></span>
-  <button onclick="logout()">Logout</button>
-</header>
-
-<div class="stats">
-  <div>Total CL: 12</div>
-  <div>Approved CL: <span id="approvedCL">0</span></div>
-  <div>Remaining CL: <span id="remainingCL">12</span></div>
-  <div>LOP Taken: <span id="lopTaken">0</span></div>
+  <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<div class="card">
-  <h3>Apply Leave</h3>
-  <input type="date" id="from">
-  <input type="date" id="to">
-  <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-  <button onclick="applyLeave()">Apply Leave</button>
-</div>
+<div class="container">
 
-<div class="card">
-  <h3>My Leave History</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="myLeaves"></tbody>
-  </table>
-</div>
+  <div class="card">
+    Total CL: 12 |
+    Approved CL: <span id="approvedCL"></span> |
+    Remaining CL: <span id="remainingCL"></span> |
+    LOP Taken: <span id="lopTaken"></span>
+  </div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+  <div class="card">
+    <h3>Apply Leave</h3>
+    <div class="apply-grid">
+      <input type="date" id="from">
+      <input type="date" id="to">
+      <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
+      <input type="file" id="document">
+      <button onclick="applyLeave()">Apply Leave</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>My Leave History</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="myLeaves"></tbody>
+    </table>
+  </div>
+
+</div>
