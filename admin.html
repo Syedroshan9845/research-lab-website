@@ -1,49 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<body onload="loadAdmin()">
+<button onclick="logout()">Logout</button>
+<button onclick="exportExcel()">Download Excel</button>
 
-<header>
-  <h2>Admin Dashboard</h2>
-  <button class="small-btn" onclick="logout()">Logout</button>
-</header>
+<table>
+<thead>
+<tr><th>Email</th><th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th><th>Action</th></tr>
+</thead>
+<tbody id="adminTable"></tbody>
+</table>
 
-<section class="card">
-  <h3>Search & Export</h3>
-  <input id="searchEmail" placeholder="Search email">
-  <input type="date" id="fromDate">
-  <input type="date" id="toDate">
-  <button onclick="downloadExcel()">Download Excel</button>
-</section>
-
-<section class="card">
-  <h3>Add User</h3>
-  <input id="newUserEmail" placeholder="User Email">
-  <input id="newUserPassword" placeholder="Password">
-  <button onclick="createUser()">Add User</button>
-</section>
-
-<section class="card">
-  <h3>Leave Requests</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th><th>From</th><th>To</th>
-        <th>CL</th><th>LOP</th><th>Status</th><th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="allLeaves"></tbody>
-  </table>
-</section>
-
-<section class="card">
-  <h3>Notifications</h3>
-  <ul id="adminNotifications"></ul>
-</section>
-
-<script src="app.js"></script>
+<script src="firebase-scripts"></script>
 </body>
-</html>
