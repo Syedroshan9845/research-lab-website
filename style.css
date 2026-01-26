@@ -1,66 +1,84 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6fa;
   margin: 0;
-  padding: 20px;
-}
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family: Arial;
+  background: linear-gradient(120deg,#4f46e5,#2563eb);
 }
 
 header {
+  background: #1e40af;
+  color: white;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+}
+
+.login-card {
+  width: 320px;
+  margin: 120px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.login-card input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 10px;
+}
+
+.password-box {
+  position: relative;
+}
+
+.password-box span {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.small-btn {
+  width: auto;
+  padding: 6px 12px;
 }
 
 .card {
   background: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  width: 300px;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 .stats {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.stats div {
+  justify-content: space-around;
   background: white;
-  padding: 10px;
-  flex: 1;
-  border-radius: 6px;
-  text-align: center;
-}
-
-input, textarea, button {
-  width: 100%;
-  margin-top: 8px;
-  padding: 8px;
-}
-
-button {
-  background: #4f46e5;
-  color: white;
-  border: none;
-  cursor: pointer;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 10px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
 }
 
 th, td {
-  border: 1px solid #ddd;
-  padding: 6px;
-  text-align: center;
+  border-bottom: 1px solid #ddd;
+  padding: 8px;
 }
+
+.APPROVED { color: green; }
+.REJECTED { color: red; }
+.PENDING { color: orange; }
