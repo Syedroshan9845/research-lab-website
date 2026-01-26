@@ -1,40 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Admin Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<header>
-  <h2>Admin Dashboard</h2>
-  <button onclick="logout()">Logout</button>
-</header>
-
-<div class="card">
-  <input id="searchEmail" placeholder="Search email">
-  <button onclick="searchLeaves()">Search</button><br><br>
-
-  <input type="date" id="fromDate">
-  <input type="date" id="toDate">
-  <button onclick="exportCSV()">Download Excel</button>
+<div class="topbar">
+  <span>Admin Dashboard</span>
+  <button class="logout-btn" onclick="logout()">Logout</button>
 </div>
 
-<div class="card">
-  <table>
-    <thead>
-      <tr>
-        <th>Email</th><th>From</th><th>To</th>
-        <th>CL</th><th>LOP</th><th>Reason</th><th>Status</th><th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="allLeaves"></tbody>
-  </table>
-</div>
+<div class="container">
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="app.js"></script>
-</body>
-</html>
+  <div class="card">
+    <h3>Search & Export</h3>
+    <div class="search-grid">
+      <input id="searchEmail" placeholder="Search email">
+      <input type="date" id="fromDate">
+      <input type="date" id="toDate">
+      <button onclick="downloadExcel()">Download</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Add User</h3>
+    <div class="search-grid">
+      <input id="newUserEmail" placeholder="User Email">
+      <input id="newUserPassword" placeholder="Password">
+      <button onclick="addUser()">Add</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Leave Requests</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th><th>From</th><th>To</th>
+          <th>CL</th><th>LOP</th><th>Reason</th>
+          <th>Status</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="allLeaves"></tbody>
+    </table>
+  </div>
+
+</div>
