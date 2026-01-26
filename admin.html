@@ -1,41 +1,47 @@
-<div class="topbar">
-  <span>Admin Dashboard</span>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h3>Admin Dashboard</h3>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="card">
+  <input id="searchEmail" placeholder="Search email">
+  <button onclick="search()">Search</button>
 </div>
 
-<div class="container">
-
-  <div class="card">
-    <h3>Search & Export</h3>
-    <div class="search-grid">
-      <input id="searchEmail" placeholder="Search email">
-      <input type="date" id="fromDate">
-      <input type="date" id="toDate">
-      <button onclick="downloadExcel()">Download</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Add User</h3>
-    <div class="search-grid">
-      <input id="newUserEmail" placeholder="User Email">
-      <input id="newUserPassword" placeholder="Password">
-      <button onclick="addUser()">Add</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>Leave Requests</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Email</th><th>From</th><th>To</th>
-          <th>CL</th><th>LOP</th><th>Reason</th>
-          <th>Status</th><th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="allLeaves"></tbody>
-    </table>
-  </div>
-
+<div class="card">
+  <input type="date" id="exportFrom">
+  <input type="date" id="exportTo">
+  <button onclick="exportCSV()">Download Excel</button>
 </div>
+
+<div class="card">
+  <input id="newUserEmail" placeholder="User email">
+  <input id="newUserPassword" placeholder="Password">
+  <button onclick="addUser()">Add User</button>
+</div>
+
+<table id="adminTable">
+  <tr>
+    <th>Email</th><th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th><th>Action</th>
+  </tr>
+</table>
+
+<div class="card">
+  <h3>Notifications</h3>
+  <ul id="adminNotifications"></ul>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
