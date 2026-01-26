@@ -1,8 +1,8 @@
 var firebaseConfig = {
-  apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
-  authDomain: "research-lab-portal.firebaseapp.com",
-  projectId: "research-lab-portal",
-  storageBucket: "research-lab-portal.firebasestorage.app"
+ apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
+ authDomain: "research-lab-portal.firebaseapp.com",
+ projectId: "research-lab-portal",
+ storageBucket: "research-lab-portal.firebasestorage.app"
 };
 firebase.initializeApp(firebaseConfig);
 
