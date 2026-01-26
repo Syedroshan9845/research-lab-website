@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Research Lab Login</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Research Lab Portal</title>
 
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-</head>
-<body class="center">
 
-  <div class="card">
-    <h2>Login</h2>
-    <input id="email" placeholder="Email">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-card">
+  <h2>Research Lab</h2>
+
+  <input id="email" type="email" placeholder="Email">
+  <div class="password-box">
     <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <span onclick="togglePassword()">👁</span>
   </div>
 
-  <script src="app.js"></script>
+  <button onclick="login()">Login</button>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
