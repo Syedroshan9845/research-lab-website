@@ -7,44 +7,37 @@
 <body>
 
 <header>
-  <h3>Admin Dashboard</h3>
-  <button class="logout" onclick="logout()">Logout</button>
+  <span>Admin Dashboard</span>
+  <button onclick="logout()">Logout</button>
 </header>
 
 <div class="card">
   <input id="searchEmail" placeholder="Search email">
-  <button onclick="search()">Search</button>
+  <button onclick="searchEmail()">Search</button>
+  <button onclick="downloadExcel()">Export Excel</button>
 </div>
 
 <div class="card">
-  <input type="date" id="exportFrom">
-  <input type="date" id="exportTo">
-  <button onclick="exportCSV()">Download Excel</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th><th>From</th><th>To</th>
+        <th>CL</th><th>LOP</th><th>Reason</th>
+        <th>Status</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="allLeaves"></tbody>
+  </table>
 </div>
-
-<div class="card">
-  <input id="newUserEmail" placeholder="User email">
-  <input id="newUserPassword" placeholder="Password">
-  <button onclick="addUser()">Add User</button>
-</div>
-
-<table id="adminTable">
-  <tr>
-    <th>Email</th><th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th><th>Action</th>
-  </tr>
-</table>
 
 <div class="card">
   <h3>Notifications</h3>
   <ul id="adminNotifications"></ul>
 </div>
 
-<!-- Firebase v8 (COMPAT) -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
 <script src="app.js"></script>
-
-
+</body>
+</html>
