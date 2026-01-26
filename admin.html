@@ -12,7 +12,11 @@
 </header>
 
 <div class="card">
-  <input id="searchEmail" placeholder="Search email" onkeyup="searchLeaves()">
+  <input id="searchEmail" placeholder="Search email">
+  <button onclick="searchLeaves()">Search</button><br><br>
+
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
   <button onclick="exportCSV()">Download Excel</button>
 </div>
 
@@ -21,7 +25,7 @@
     <thead>
       <tr>
         <th>Email</th><th>From</th><th>To</th>
-        <th>CL</th><th>LOP</th><th>Status</th><th>Action</th>
+        <th>CL</th><th>LOP</th><th>Reason</th><th>Status</th><th>Action</th>
       </tr>
     </thead>
     <tbody id="allLeaves"></tbody>
