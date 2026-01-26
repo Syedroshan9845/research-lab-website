@@ -1,11 +1,8 @@
-/**************** FIREBASE CONFIG ****************/
 var firebaseConfig = {
   apiKey: "AIzaSyCsYhAzSyPp1PQH3skrrnVuKRiQmzZHNGo",
   authDomain: "research-lab-portal.firebaseapp.com",
   projectId: "research-lab-portal",
-  storageBucket: "research-lab-portal.firebasestorage.app",
-  messagingSenderId: "149246738052",
-  appId: "1:149246738052:web:f751d671a4ee32b3acccd1"
+  storageBucket: "research-lab-portal.firebasestorage.app"
 };
 firebase.initializeApp(firebaseConfig);
 
@@ -13,195 +10,115 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-/**************** UTIL ****************/
-function $(id) {
-  return document.getElementById(id);
-}
-function pageName() {
-  return location.pathname.split("/").pop();
-}
-
-/**************** PASSWORD TOGGLE ****************/
 function togglePassword() {
-  const p = $("password");
+  const p = document.getElementById("password");
   if (p) p.type = p.type === "password" ? "text" : "password";
 }
 
-/**************** LOGIN ****************/
 function login() {
-  const email = $("email").value.trim();
-  const password = $("password").value;
-
-  if (!email || !password) {
-    alert("Email and password required");
-    return;
-  }
-
-  auth.signInWithEmailAndPassword(email, password)
-    .catch(err => alert(err.message));
+  auth.signInWithEmailAndPassword(
+    email.value.trim(),
+    password.value
+  ).catch(e => alert(e.message));
 }
 
-/**************** LOGOUT ****************/
 function logout() {
-  auth.signOut().then(() => {
-    location.replace("index.html");
-  });
+  auth.signOut().then(() => location.replace("index.html"));
 }
 
-/**************** AUTH HANDLER ****************/
 auth.onAuthStateChanged(async user => {
-  const page = pageName();
+  const page = location.pathname.split("/").pop();
 
   if (!user) {
     if (page !== "index.html") location.replace("index.html");
     return;
   }
 
-  // fetch role
-  const adminSnap = await db.collection("admins").doc(user.uid).get();
-  const userSnap = await db.collection("users").doc(user.uid).get();
+  const admin = await db.collection("admins").doc(user.uid).get();
+  const normal = await db.collection("users").doc(user.uid).get();
 
-  if (adminSnap.exists) {
-    if (page !== "admin.html") location.replace("admin.html");
-    if (page === "admin.html") loadAdminDashboard();
-    return;
-  }
+  if (admin.exists && page !== "admin.html") location.replace("admin.html");
+  if (normal.exists && page !== "user.html") location.replace("user.html");
 
-  if (userSnap.exists) {
-    if (page !== "user.html") location.replace("user.html");
-    if (page === "user.html") loadUserDashboard();
-    return;
-  }
-
-  alert("No role assigned. Contact admin.");
-  auth.signOut();
+  if (page === "user.html") loadUser();
+  if (page === "admin.html") loadAdmin();
 });
 
-/**************** USER DASHBOARD ****************/
-async function loadUserDashboard() {
+async function loadUser() {
   const user = auth.currentUser;
-  $("userEmail").innerText = user.email;
-  $("totalCL").innerText = 12;
+  userEmail.innerText = user.email;
 
-  loadUserLeaves();
-  loadUserNotifications();
-}
-
-async function loadUserLeaves() {
-  const user = auth.currentUser;
-  const table = $("leaveTable");
-
-  table.innerHTML = `
-    <tr>
-      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
-    </tr>`;
-
-  let approvedCL = 0;
-  let lopTaken = 0;
+  let approvedCL = 0, lop = 0;
+  myLeaves.innerHTML = "";
 
   const snap = await db.collection("leaves")
     .where("uid", "==", user.uid)
-    .orderBy("createdAt", "desc")
     .get();
 
-  snap.forEach(doc => {
-    const d = doc.data();
-    if (d.status === "APPROVED") {
-      approvedCL += d.cl;
-      lopTaken += d.lop;
+  snap.forEach(d => {
+    const l = d.data();
+    if (l.status === "APPROVED") {
+      approvedCL += l.cl;
+      lop += l.lop;
     }
-
-    table.innerHTML += `
+    myLeaves.innerHTML += `
       <tr>
-        <td>${d.from}</td>
-        <td>${d.to}</td>
-        <td>${d.cl}</td>
-        <td>${d.lop}</td>
-        <td>${d.reason}</td>
-        <td>${d.status}</td>
+        <td>${l.from}</td>
+        <td>${l.to}</td>
+        <td>${l.cl}</td>
+        <td>${l.lop}</td>
+        <td>${l.reason}</td>
+        <td>${l.status}</td>
       </tr>`;
   });
 
-  $("approvedCL").innerText = approvedCL;
-  $("remainingCL").innerText = Math.max(12 - approvedCL, 0);
-  $("lopTaken").innerText = lopTaken;
+  approvedCL = Math.min(approvedCL, 12);
+  approvedCLSpan.innerText = approvedCL;
+  remainingCL.innerText = 12 - approvedCL;
+  lopTaken.innerText = lop;
+
+  loadUserNotifications();
 }
 
-/**************** APPLY LEAVE ****************/
 async function applyLeave() {
-  const from = $("from").value;
-  const to = $("to").value;
-  const reason = $("reason").value.trim();
-  const file = $("document").files[0];
-  const user = auth.currentUser;
+  if (!reason.value.trim()) return alert("Reason mandatory");
 
-  if (!from || !to || !reason) {
-    alert("Reason and dates are mandatory");
-    return;
-  }
-
-  const days = Math.floor((new Date(to) - new Date(from)) / 86400000) + 1;
-  if (days <= 0) {
-    alert("Invalid date range");
-    return;
-  }
+  const days =
+    (new Date(to.value) - new Date(from.value)) / 86400000 + 1;
 
   const cl = Math.min(days, 2);
   const lop = Math.max(days - 2, 0);
 
-  let documentUrl = "";
-  if (file) {
-    const ref = storage.ref(`docs/${user.uid}/${file.name}`);
-    await ref.put(file);
-    documentUrl = await ref.getDownloadURL();
-  }
-
   await db.collection("leaves").add({
-    uid: user.uid,
-    email: user.email,
-    from,
-    to,
-    days,
+    uid: auth.currentUser.uid,
+    email: auth.currentUser.email,
+    from: from.value,
+    to: to.value,
     cl,
     lop,
-    reason,
-    documentUrl,
+    reason: reason.value,
     status: "PENDING",
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
   await db.collection("notifications").add({
     to: "ADMIN",
-    message: `${user.email} applied for leave`,
+    message: auth.currentUser.email + " applied for leave",
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   });
 
-  alert("Leave applied");
-  loadUserLeaves();
+  loadUser();
 }
 
-/**************** ADMIN DASHBOARD ****************/
-function loadAdminDashboard() {
-  loadAdminLeaves();
-  loadAdminNotifications();
-}
+function loadAdmin() {
+  allLeaves.innerHTML = "";
 
-function loadAdminLeaves() {
-  const table = $("adminTable");
-
-  table.innerHTML = `
-    <tr>
-      <th>Email</th><th>From</th><th>To</th>
-      <th>CL</th><th>LOP</th><th>Reason</th>
-      <th>Status</th><th>Action</th>
-    </tr>`;
-
-  db.collection("leaves")
-    .orderBy("createdAt", "desc")
+  db.collection("leaves").orderBy("createdAt", "desc")
     .onSnapshot(snap => {
+      allLeaves.innerHTML = "";
       snap.forEach(doc => {
         const d = doc.data();
-        table.innerHTML += `
+        allLeaves.innerHTML += `
           <tr>
             <td>${d.email}</td>
             <td>${d.from}</td>
@@ -217,84 +134,58 @@ function loadAdminLeaves() {
           </tr>`;
       });
     });
+
+  loadAdminNotifications();
 }
 
-/**************** APPROVE / REJECT ****************/
-async function approve(id) {
-  const ref = db.collection("leaves").doc(id);
-  const snap = await ref.get();
-  const d = snap.data();
-
-  await ref.update({ status: "APPROVED" });
-
-  await db.collection("users").doc(d.uid).update({
-    usedLeaves: firebase.firestore.FieldValue.increment(d.cl)
-  });
-
-  await db.collection("notifications").add({
-    to: d.uid,
-    message: "Your leave was approved",
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
+function approve(id) {
+  db.collection("leaves").doc(id).update({ status: "APPROVED" });
 }
 
-async function reject(id) {
-  await db.collection("leaves").doc(id).update({
+function reject(id) {
+  db.collection("leaves").doc(id).update({
     status: "REJECTED",
     cl: 0,
     lop: 0
   });
 }
 
-/**************** SEARCH (CLIENT SIDE) ****************/
 function searchEmail() {
-  const term = $("searchEmail").value.toLowerCase();
-  const rows = $("adminTable").rows;
-
-  for (let i = 1; i < rows.length; i++) {
-    rows[i].style.display =
-      rows[i].innerText.toLowerCase().includes(term) ? "" : "none";
-  }
+  const term = searchEmail.value.toLowerCase();
+  [...allLeaves.rows].forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(term) ? "" : "none";
+  });
 }
 
-/**************** EXPORT CSV ****************/
 function downloadExcel() {
   let csv = "Email,From,To,CL,LOP,Reason,Status\n";
-  const rows = $("adminTable").rows;
-
-  for (let i = 1; i < rows.length; i++) {
-    if (rows[i].style.display === "none") continue;
-    csv += [...rows[i].cells].slice(0, 7).map(c => `"${c.innerText}"`).join(",") + "\n";
-  }
-
-  const blob = new Blob([csv], { type: "text/csv" });
+  [...allLeaves.rows].forEach(r => {
+    csv += [...r.cells].map(c => c.innerText).join(",") + "\n";
+  });
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
+  a.href = URL.createObjectURL(new Blob([csv]));
   a.download = "leaves.csv";
   a.click();
 }
 
-/**************** NOTIFICATIONS ****************/
 function loadUserNotifications() {
-  const box = $("userNotifications");
-  box.innerHTML = "";
-
+  userNotifications.innerHTML = "";
   db.collection("notifications")
     .where("to", "==", auth.currentUser.uid)
-    .orderBy("createdAt", "desc")
-    .onSnapshot(snap => {
-      snap.forEach(d => box.innerHTML += `<li>${d.data().message}</li>`);
-    });
+    .onSnapshot(s =>
+      s.forEach(d =>
+        userNotifications.innerHTML += `<li>${d.data().message}</li>`
+      )
+    );
 }
 
 function loadAdminNotifications() {
-  const box = $("adminNotifications");
-  box.innerHTML = "";
-
+  adminNotifications.innerHTML = "";
   db.collection("notifications")
     .where("to", "==", "ADMIN")
-    .orderBy("createdAt", "desc")
-    .onSnapshot(snap => {
-      snap.forEach(d => box.innerHTML += `<li>${d.data().message}</li>`);
-    });
+    .onSnapshot(s =>
+      s.forEach(d =>
+        adminNotifications.innerHTML += `<li>${d.data().message}</li>`
+      )
+    );
 }
