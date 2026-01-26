@@ -1,38 +1,49 @@
-<div class="topbar">
-  <span id="welcome"></span>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <span id="userEmail"></span>
+  <button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="card">
+  <b>Total CL:</b> <span id="totalCL"></span> |
+  <b>Approved:</b> <span id="approvedCL"></span> |
+  <b>Remaining:</b> <span id="remainingCL"></span> |
+  <b>LOP:</b> <span id="lopTaken"></span>
 </div>
 
-<div class="container">
-
-  <div class="card">
-    Total CL: 12 |
-    Approved CL: <span id="approvedCL"></span> |
-    Remaining CL: <span id="remainingCL"></span> |
-    LOP Taken: <span id="lopTaken"></span>
-  </div>
-
-  <div class="card">
-    <h3>Apply Leave</h3>
-    <div class="apply-grid">
-      <input type="date" id="from">
-      <input type="date" id="to">
-      <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-      <input type="file" id="document">
-      <button onclick="applyLeave()">Apply Leave</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>My Leave History</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="myLeaves"></tbody>
-    </table>
-  </div>
-
+<div class="card">
+  <h3>Apply Leave</h3>
+  <input type="date" id="fromDate">
+  <input type="date" id="toDate">
+  <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
+  <input type="file" id="file">
+  <button onclick="applyLeave()">Apply Leave</button>
 </div>
+
+<div class="card">
+  <h3>My Leave History</h3>
+  <table id="leaveTable">
+    <tr>
+      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
+    </tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Notifications</h3>
+  <ul id="notifications"></ul>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
