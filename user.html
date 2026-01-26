@@ -11,34 +11,36 @@
   <button onclick="logout()">Logout</button>
 </header>
 
-<section class="stats">
+<div class="stats">
   <div>Total CL: 12</div>
   <div>Approved CL: <span id="approvedCL">0</span></div>
   <div>Remaining CL: <span id="remainingCL">12</span></div>
   <div>LOP Taken: <span id="lopTaken">0</span></div>
-</section>
+</div>
 
-<section class="card">
+<div class="card">
   <h3>Apply Leave</h3>
   <input type="date" id="from">
   <input type="date" id="to">
   <textarea id="reason" placeholder="Reason"></textarea>
-  <button onclick="applyLeave()">Apply</button>
-</section>
+  <button onclick="applyLeave()">Apply Leave</button>
+</div>
 
-<section class="card">
+<div class="card">
   <h3>My Leave History</h3>
   <table>
     <thead>
-      <tr><th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th></tr>
+      <tr>
+        <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th>
+      </tr>
     </thead>
     <tbody id="myLeaves"></tbody>
   </table>
-</section>
+</div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
