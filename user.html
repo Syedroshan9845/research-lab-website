@@ -1,54 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User Dashboard</title>
+  <title>User</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-  <span id="userEmail"></span>
-  <button onclick="logout()">Logout</button>
-</header>
+<button class="logout" onclick="logout()">Logout</button>
 
-<div class="card">
-  Total CL: <span id="totalCL">12</span> |
-  Approved: <span id="approvedCL">0</span> |
-  Remaining: <span id="remainingCL">12</span> |
-  LOP: <span id="lopTaken">0</span>
-</div>
+<h3 id="welcome"></h3>
+<p>
+Total CL: <span id="totalCL"></span> |
+Approved CL: <span id="approvedCL"></span> |
+Remaining CL: <span id="remainingCL"></span> |
+LOP: <span id="lopTaken"></span>
+</p>
 
-<div class="card">
-  <h3>Apply Leave</h3>
+<div class="card small">
+  <h4>Apply Leave</h4>
   <input type="date" id="from">
   <input type="date" id="to">
   <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
   <input type="file" id="document">
-  <button onclick="applyLeave()">Apply Leave</button>
+  <button onclick="applyLeave()">Apply</button>
 </div>
 
-<div class="card">
-  <h3>My Leaves</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="myLeaves"></tbody>
-  </table>
-</div>
-
-<div class="card">
-  <h3>Notifications</h3>
-  <ul id="userNotifications"></ul>
-</div>
+<table>
+  <thead>
+    <tr>
+      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
+    </tr>
+  </thead>
+  <tbody id="myLeaves"></tbody>
+</table>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-<script src="app_v1.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
-
