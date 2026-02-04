@@ -1,34 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>User</title>
+  <title>User Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <button class="logout" onclick="logout()">Logout</button>
 
-<h3 id="welcome"></h3>
-<p>
-Total CL: <span id="totalCL"></span> |
-Approved CL: <span id="approvedCL"></span> |
-Remaining CL: <span id="remainingCL"></span> |
-LOP: <span id="lopTaken"></span>
-</p>
+<h2>User Dashboard</h2>
 
-<div class="card small">
-  <h4>Apply Leave</h4>
+<div class="card">
   <input type="date" id="from">
   <input type="date" id="to">
   <textarea id="reason" placeholder="Reason (mandatory)"></textarea>
-  <input type="file" id="document">
-  <button onclick="applyLeave()">Apply</button>
+  <input type="file" id="file">
+  <button onclick="applyLeave()">Apply Leave</button>
 </div>
 
+<h3>My Leave History</h3>
 <table>
   <thead>
     <tr>
-      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Reason</th><th>Status</th>
+      <th>From</th><th>To</th><th>CL</th><th>LOP</th><th>Status</th>
     </tr>
   </thead>
   <tbody id="myLeaves"></tbody>
@@ -37,6 +31,8 @@ LOP: <span id="lopTaken"></span>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <script src="app.js"></script>
+<script>loadUserLeaves();</script>
 </body>
 </html>
