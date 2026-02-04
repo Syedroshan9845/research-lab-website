@@ -1,41 +1,57 @@
-body { font-family: Arial; background:#eef; padding:20px }
-.center { display:flex; justify-content:center; align-items:center; height:100vh }
+body {
+  font-family: Arial;
+  background: #f4f6f8;
+  padding: 20px;
+}
+
+.title {
+  text-align: center;
+}
 
 .card {
-  background:#fff;
-  padding:20px;
-  border-radius:8px;
-  width:300px;
+  background: white;
+  padding: 20px;
+  width: 300px;
+  margin: 20px auto;
+  border-radius: 6px;
 }
-
-.small { width:400px }
 
 input, textarea, button {
-  width:100%;
-  margin:6px 0;
-  padding:8px;
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
 }
 
-button { background:#007bff; color:#fff; border:none; cursor:pointer }
+button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
 .logout {
-  position:fixed;
-  top:10px;
-  right:10px;
-  width:auto;
+  float: right;
+  background: red;
+  width: auto;
 }
 
 table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:20px;
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
 }
 
 th, td {
-  border:1px solid #ccc;
-  padding:6px;
-  text-align:center;
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
 }
 
-.password-box { display:flex }
-.password-box span { cursor:pointer; padding:6px }
+.password-box {
+  display: flex;
+}
+
+.password-box span {
+  cursor: pointer;
+  padding: 8px;
+}
