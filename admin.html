@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin</title>
+  <title>Admin Dashboard</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,10 +10,13 @@
 
 <h2>Admin Dashboard</h2>
 
-<input id="searchEmail" placeholder="Search email">
-<button onclick="search()">Search</button>
-<button onclick="exportCSV()">Export CSV</button>
+<div class="card">
+  <input type="date" id="exportFrom">
+  <input type="date" id="exportTo">
+  <button onclick="exportCSV()">Download Excel</button>
+</div>
 
+<h3>All Leave Requests</h3>
 <table>
   <thead>
     <tr>
@@ -27,6 +30,8 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <script src="app.js"></script>
+<script>loadAdmin();</script>
 </body>
 </html>
